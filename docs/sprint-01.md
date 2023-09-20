@@ -8,6 +8,8 @@ Player movement - create a system that allows a player to move around the playin
 
 Explore the different methods of movement using dice, there may be more than one die, or a single with any number of sides. At the end of sprint, be prepared to discuss your decision.
 
+> Use the templates found in the src/js directory to complete the stories
+
 ## Stories
 
 > Note, normally testing is an expectation, not a single story as the test cases MAY be used to demonstrate the work at the end of the sprint.
