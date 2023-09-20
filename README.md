@@ -62,7 +62,7 @@ tsconfig.json
 ```
 
 babel.config.cjs
-```json
+```javascript
 module.exports = {
   presets: [
     ['@babel/preset-env', {targets: {node: 'current'}}],
