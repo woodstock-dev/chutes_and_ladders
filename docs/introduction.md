@@ -23,7 +23,9 @@ A sprint is an Agile term for a time-boxed set of one or more tasks that will le
 * Retrospective - Is a cemeony held at the end of each sprint to discuss What went well, what did not go well, and what to stop/stop doing.
 
 <div align="center">
+
 ![Agile Flow](./assets/agile.png)
+
 </div>
 
 ## Our Sprints
