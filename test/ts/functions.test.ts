@@ -12,3 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import '../../src/ts/model/die'
+
+test('test random number function', () => {
+  throw new Error("Method not implemented.");
+})
