@@ -11,6 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import {Space} from "./space";
+
 export interface IPlayer {
   Name : string;
   Ordinal : number;
@@ -34,12 +36,31 @@ export enum SpaceType {
 
 
 export interface ISpace {
+  // Member Variables
   Value : string;
   Type : SpaceType;
   Next : ISpace;
   Special : ISpace | null;
-  isOccupied() : boolean;
+  Players : Array<IAvatar>;
+
+  // Functions
+  /**
+   * A function for handling an avatar when it lands on the space.
+   * @param avatar
+   */
   land(avatar : IAvatar) : void;
+
+  /**
+   * A function for updating the space state when the avatar leaves the space.
+   */
+  leave() : void
+
+  // Getters
+  get value() : string
+  get type() : SpaceType
+  get next() : ISpace
+  get special() : ISpace | null
+  get occupied() : boolean;
 
   /**
    * The validator method is used to verify a space based on one or more rule functions.
