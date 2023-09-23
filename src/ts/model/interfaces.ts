@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 export interface IPlayer {
   Name : string;
   Ordinal : number;
@@ -32,12 +31,22 @@ export enum SpaceType {
   FINISH = 4,
 }
 
+
+
 export interface ISpace {
   Value : string;
   Type : SpaceType;
   Next : ISpace;
   Special : ISpace | null;
+  isOccupied() : boolean;
   land(avatar : IAvatar) : void;
+
+  /**
+   * The validator method is used to verify a space based on one or more rule functions.
+   * For example, if is the "FINISH" space, there are no next spaces.
+   * @param validators
+   */
+  validate(validators: Array<(space: ISpace) => boolean>) : boolean;
 }
 
 export interface ISummedRoll {
