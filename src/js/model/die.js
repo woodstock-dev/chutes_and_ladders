@@ -13,7 +13,7 @@
 // limitations under the License.
 
 export class SummedRoll {
-  // Shoud return an array of numbers
+  // Should return an array of numbers
   rollValues() {
     throw new Error("Method not implemented.");
   }

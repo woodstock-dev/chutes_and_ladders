@@ -12,20 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import '../../src/ts/model/functions'
+
+import {Die} from "../../src/ts/model/die";
 
 test('Test die class', () => {
   throw new Error("Method not implemented.");
 })
 
-test('paint board', () => {
-  let total = 100;
-  for (let i : number = 10; i >= 1; i--) {
-    let row = []
-    for (let j : number = 1; j<=10; j++) {
-      row.push(total--);
-    }
-    row = (i%2==0) ? row : row.reverse()
-    console.log(row);
-  }
-})

@@ -1,7 +1,5 @@
 
-// Add avatar implemenations here
-
-import {ISpace} from "../../ts/model/interfaces.js";
+// Add avatar implementations here
 
 export class Avatar {
     Location;

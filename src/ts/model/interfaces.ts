@@ -83,16 +83,16 @@ export interface ISpace {
 }
 
 
-export interface Board {
+export interface IBoard {
   spaces() : Array<Space>
   setup() : void
   display() : string
 }
 
-export interface Game {
+export interface IGame {
   minPlayers() : number
   maxPlayers() : number
-  board() : Board
+  board() : IBoard
   players() : Array<IPlayer>
   addPlayer(player: IPlayer) : void
   play() : boolean

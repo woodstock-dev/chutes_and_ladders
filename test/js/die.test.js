@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import '../../src/js/model/die'
+import { Die } from '../../src/js/model/die'
 
 test('Test die class', () => {
   throw new Error("Method not implemented.");
