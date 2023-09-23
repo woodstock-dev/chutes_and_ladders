@@ -13,16 +13,17 @@
 // limitations under the License.
 import {Space} from "./space";
 
-export interface IPlayer {
-  Name : string;
-  Ordinal : number;
-  Avatar : IAvatar;
-}
-
-export interface IAvatar {
-  Name : string;
-  Location : ISpace;
-  move(space : ISpace) : void;
+export enum Color {
+  RED,
+  WHITE,
+  BLUE,
+  GREEN,
+  PURPLE,
+  YELLOW,
+  ORANGE,
+  PINK,
+  BLACK,
+  BROWN
 }
 
 export enum SpaceType {
@@ -34,6 +35,17 @@ export enum SpaceType {
 }
 
 
+export interface IPlayer {
+  Name : string;
+  Ordinal : number;
+  Avatar : IAvatar;
+}
+
+export interface IAvatar {
+  Name : string;
+  Location : ISpace;
+  move(space : ISpace) : void;
+}
 
 export interface ISpace {
   // Member Variables
@@ -68,6 +80,22 @@ export interface ISpace {
    * @param validators
    */
   validate(validators: Array<(space: ISpace) => boolean>) : boolean;
+}
+
+
+export interface Board {
+  spaces() : Array<Space>
+  setup() : void
+  display() : string
+}
+
+export interface Game {
+  minPlayers() : number
+  maxPlayers() : number
+  board() : Board
+  players() : Array<IPlayer>
+  addPlayer(player: IPlayer) : void
+  play() : boolean
 }
 
 export interface ISummedRoll {
