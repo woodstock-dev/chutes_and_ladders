@@ -11,5 +11,5 @@ const FirstSpaceValidator = (space) => {
   return false;
 }
 
-export {LastSpaceValidator, FirstSpaceValidator}
+export default {LastSpaceValidator, FirstSpaceValidator}
 

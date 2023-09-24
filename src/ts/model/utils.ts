@@ -19,18 +19,6 @@ const GenerateRandomNumber = (upperBound : number) : number => {
   throw new Error("Method not implemented.");
 }
 
-
-const LastSpaceValidator = (space : ISpace) : boolean  => {
-  // TODO - implement a validator to determine if the space is the Last space
-  return false;
-}
-
-const FirstSpaceValidator = (space : ISpace) : boolean => {
-  // TODO - implement a validator to determine if the space is the first space
-  return false;
-}
-
-
 /**
  *
  * @param dice the dice to roll
@@ -63,4 +51,4 @@ const RollMultipleAndSum = (dice: Array<IDie>) : ISummedRoll => {
 }
 
 
-export {GenerateRandomNumber, LastSpaceValidator, FirstSpaceValidator, RollDice, RollMultipleDice, RollMultipleAndSum}
+export default { GenerateRandomNumber, RollDice, RollMultipleDiceMultipleTimes, RollMultipleAndSum }
