@@ -47,7 +47,7 @@ export const rollMultipleDiceMultipleTimes = (totalRolls, ...dice) => {
   return [][0]
 }
 
-export const rollSingleDiceMultipleTimesAndSum = (count, ...dice) => {
+export const rollSingleDiceMultipleTimesAndSum = (count, dice) => {
   // TODO - Implement this method
   return new SummedRoll([]);
 }
