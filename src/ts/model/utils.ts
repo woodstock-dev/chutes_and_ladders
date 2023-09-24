@@ -47,7 +47,7 @@ const RollDice = (dice : Array<IDie>) : Array<number> => {
  * @param dice one or more dice
  * @return number[][] an array of values
  */
-const RollMultipleDice = (totalRolls : number, ...dice : Array<IDie>) : Array<Array<number>> => {
+const RollMultipleDiceMultipleTimes = (totalRolls : number, ...dice : Array<IDie>) : Array<Array<number>> => {
   // TODO - Implement rolling multiple dice multiple times
   return [][0]
 }

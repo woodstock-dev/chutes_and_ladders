@@ -37,7 +37,7 @@ export const rollDice = (...dice) => {
  * @param dice one or more dice
  * @return number[][] an array of values
  */
-export const rollMultipleDice = (totalRolls, ...dice) => {
+export const rollMultipleDiceMultipleTimes = (totalRolls, ...dice) => {
   // TODO - Implement rolling multiple dice multiple times
   return [][0]
 }
