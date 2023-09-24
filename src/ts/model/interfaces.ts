@@ -79,16 +79,16 @@ export interface ISpace {
   validate(validators: Array<(space: ISpace) => boolean>) : boolean;
 }
 
-export interface Board {
+export interface IBoard {
   spaces() : Array<ISpace>
   setup() : void
   display() : string
 }
 
-export interface Game {
+export interface IGame {
   get minimumPlayers() : number
   get maxPlayers() : number
-  get board() : Board
+  get board() : IBoard
   get players() : Array<IPlayer>
   addPlayer(player: IPlayer) : void
   play() : boolean
