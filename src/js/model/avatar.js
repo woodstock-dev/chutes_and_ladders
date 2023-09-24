@@ -38,6 +38,10 @@ export class Avatar {
         return this.#Location
     }
 
+    get color() {
+        return this.#Color;
+    }
+
     set location(loc) {
         this.#Location = loc
     }
