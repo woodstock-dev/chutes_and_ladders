@@ -14,6 +14,6 @@
 
 
 test('test random number function', () => {
-  // TODO - Test randome number generators with valid and invalid ranges
+  // TODO - Test random number generators with valid and invalid ranges
   throw new Error("Method not implemented.");
 })

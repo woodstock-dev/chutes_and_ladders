@@ -37,8 +37,8 @@ Stories 5-7 explore adding the second dice to the mix.
 
 4. As a developer I will test my Die class to ensure that all methods work as expected.
 
-5. As a developer I will write a test case that rolls multiple dice and sums their values, I will ensure that the sum of
-   the dice is >= the sum of the lowest possible values and <= the sum of the highest values per die.
+5. As a developer I will write a test case that rolls a dice multiple times and sums the values, I will ensure that the sum of
+   the dice is >= the sum of the lowest possible values and <= the product of the total rolls and the highest value
 
 6. As a developer I will write a test using mixed die, one six sided die, and one four sided die and verify the rolls
    based on the criteria of story 5.
