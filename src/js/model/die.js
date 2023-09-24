@@ -12,33 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export class SummedRoll {
-  // Should return an array of numbers
-  rollValues() {
-    throw new Error("Method not implemented.");
-  }
-  // Should return a sum of all the roles as a number value
-  sum() {
-    throw new Error("Method not implemented.");
-  }
-}
-
+/**
+ * The Die class represents the idea of a single dice (die) that may have four or more sides.
+ */
 export class Die {
+  #Sides = -1;
+  constructor(sides) {
+    this.#Sides = sides;
+  }
   // Should return a number of sides
   get sides() {
+    // TODO - implement the sides method
     throw new Error("Method not implemented.");
   }
   // Should return a random number between one and the total sides
   roll() {
+    // TODO - implement the roll method
     throw new Error("Method not implemented.");
   }
-  // Should return an array of numbers
-  rollMultiple(totalRolls) {
-    throw new Error("Method not implemented.");
-  }
-  // Should return a SummedRoll
-  rollMultipleAndSum(totalRolls) {
-    throw new Error("Method not implemented.");
-  }
-
 }

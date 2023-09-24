@@ -12,29 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { IDie, ISummedRoll } from "./interfaces";
+import { IDie } from "./interfaces";
 
-export class SummedRoll implements ISummedRoll {
-  rollValues(): number[] {
-    throw new Error("Method not implemented.");
-  }
-  sum(): number {
-    throw new Error("Method not implemented.");
-  }
-}
+export const MINIMUM_SIDES = 4;
 
 export class Die implements IDie {
-  get sides(): number {
-    throw new Error("Method not implemented.");
+  Sides : number = 0;
+
+  constructor(Sides: number) {
+    this.Sides = Sides;
   }
+
   roll(): number {
-    throw new Error("Method not implemented.");
+    // TODO - Implement the roll method returning a random number between 1 and the side count.
+    return 0;
   }
-  rollMultiple(totalRolls: number): number[] {
-    throw new Error("Method not implemented.");
-  }
-  rollMultipleAndSum(totalRolls: number): ISummedRoll {
-    throw new Error("Method not implemented.");
+
+  get sides(): number {
+    return this.Sides;
   }
 
 }

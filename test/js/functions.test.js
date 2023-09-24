@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {generateRandomNumber} from  '../../src/js/model/functions'
 
 test('test random number function', () => {
+  // TODO - Test randome number generators with valid and invalid ranges
   throw new Error("Method not implemented.");
 })

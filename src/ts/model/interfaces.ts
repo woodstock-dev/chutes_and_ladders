@@ -11,8 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import {Space} from "./space";
 
+/**
+ * An enumeration is a constrained type that provides
+ * memory efficient, O(n) access to values using friendly names.
+ */
 export enum Color {
   RED,
   WHITE,
@@ -26,6 +29,9 @@ export enum Color {
   BROWN
 }
 
+/**
+ * A SpaceType represents the types of spaces on our playing board.
+ */
 export enum SpaceType {
   START = 0,
   NORMAL = 1,
@@ -34,37 +40,33 @@ export enum SpaceType {
   FINISH = 4,
 }
 
-
+/**
+ * An IPlayer is the named player for the game.
+ */
 export interface IPlayer {
-  Name : string;
-  Ordinal : number;
-  Avatar : IAvatar;
+  get name() : string;
+  get order() : number;
+  get avatar() : IAvatar;
+  set avatar(avatar: IAvatar);
 }
 
+/**
+ * An Avatar is the representation of the player on the board.
+ * The Avatar is responsible for knowing where it is on the board,
+ * and moving between locations on the board.
+ */
 export interface IAvatar {
-  Name : string;
-  Location : ISpace;
-  move(space : ISpace) : void;
+  get name() : string;
+  get location() : ISpace;
+  set location(location : ISpace);
+  move(numberOfSpaces: number) : void;
 }
 
+/**
+ * An ISpace represents the single space on any board type.
+ */
 export interface ISpace {
-  // Member Variables
-  Value : string;
-  Type : SpaceType;
-  Next : ISpace;
-  Special : ISpace | null;
-  Players : Array<IAvatar>;
-
-  // Functions
-  /**
-   * A function for handling an avatar when it lands on the space.
-   * @param avatar
-   */
   land(avatar : IAvatar) : void;
-
-  /**
-   * A function for updating the space state when the avatar leaves the space.
-   */
   leave() : void
 
   // Getters
@@ -74,41 +76,31 @@ export interface ISpace {
   get special() : ISpace | null
   get occupied() : boolean;
 
-  /**
-   * The validator method is used to verify a space based on one or more rule functions.
-   * For example, if is the "FINISH" space, there are no next spaces.
-   * @param validators
-   */
   validate(validators: Array<(space: ISpace) => boolean>) : boolean;
 }
 
-
-export interface IBoard {
-  spaces() : Array<Space>
+export interface Board {
+  spaces() : Array<ISpace>
   setup() : void
   display() : string
 }
 
-export interface IGame {
-  minPlayers() : number
-  maxPlayers() : number
-  board() : IBoard
-  players() : Array<IPlayer>
+export interface Game {
+  get minimumPlayers() : number
+  get maxPlayers() : number
+  get board() : Board
+  get players() : Array<IPlayer>
   addPlayer(player: IPlayer) : void
   play() : boolean
-}
-
-export interface ISummedRoll {
-  rollValues() : Array<number>;
-  sum() : number;
+  takeTurn() : void
 }
 
 export interface IDie {
   get sides() : number;
   roll() : number;
-  rollMultiple(totalRolls : number) : Array<number>;
-  rollMultipleAndSum(totalRolls : number) : ISummedRoll;
 }
 
-
-
+export interface ISummedRoll {
+  get rolledValues() : Array<number>;
+  get sum() : number;
+}

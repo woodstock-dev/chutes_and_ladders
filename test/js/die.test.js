@@ -12,8 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 import { Die } from '../../src/js/model/die'
+import {RollDice} from "../../src/ts/model/utils.js";
 
 test('Test die class', () => {
-  throw new Error("Method not implemented.");
+  // Example
+  const d6 = new Die(6)
+  for (let i=0;i<100; i++) {
+    let rollValue = RollDice(d6).pop()
+    expect(rollValue).toBeGreaterThanOrEqual(1);
+    expect(rollValue).toBeLessThanOrEqual(d6.sides);
+  }
 })
