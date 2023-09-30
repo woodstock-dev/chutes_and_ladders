@@ -15,9 +15,9 @@
 // Should take a number argument >= 1 and return a number value
 import {SummedRoll} from "./summed_roll.js";
 
+
 export const generateRandomNumber = (upperBound) => {
-  // TODO - Write a method that returns a number from 1 to the upperBound
-  throw new Error("Method not implemented.");
+  return Math.floor(Math.random() * upperBound) +1
 }
 
 
@@ -26,14 +26,23 @@ export const generateRandomNumber = (upperBound) => {
  * @param dice the dice to roll
  * @return number[] each dice that was rolled once.
  */
+
+/*
+ANYTIME dice IS CALLED, IT REPRESENTS AN INSTANCE OF THE die METHOD. IF THE
+SPREAD OR REST OPERATOR IS USED, THE FUNCTION CAN HAVE MULTIPLE INSTANCES
+OF THE Die CLASS CALLED AND PASSED INTO THE RECEIVING FUNCTION AS AN ARGUMENT
+*/
 export const rollDice = (...dice) => {
-  // TODO - Implement rolling one or more dice once and only once.
-  return []
+  return dice.map(shake => shake.roll())
 }
 
-export const rollSingleDiceMultipleTimes = (count, die) => {
-  // TODO - Implement rolling a single dice multiple times
-  return []
+export const rollSingleDiceMultipleTimes = (count, die, rolls = []) => {
+  if (count === 0) {
+    return
+  }
+  rolls.push(die.roll())
+  rollSingleDiceMultipleTimes(count-1, die, rolls)
+  return rolls
 }
 
 /**
@@ -42,14 +51,22 @@ export const rollSingleDiceMultipleTimes = (count, die) => {
  * @param dice one or more dice
  * @return number[][] an array of values
  */
-export const rollMultipleDiceMultipleTimes = (totalRolls, ...dice) => {
-  // TODO - Implement rolling multiple dice multiple times
-  return [][0]
+export const rollMultipleDiceMultipleTimes = (totalRolls, rolls = [], ...dice) => {
+  if (totalRolls === 0) {
+    return
+  }
+  rolls.push(rollDice(...dice))
+  rollMultipleDiceMultipleTimes(totalRolls-1, rolls, ...dice)
+  return rolls
 }
 
-export const rollSingleDiceMultipleTimesAndSum = (count, dice) => {
-  // TODO - Implement this method
-  return new SummedRoll([]);
+export const rollSingleDiceMultipleTimesAndSum = (count, dice, rolls) => {
+  if (count === 0) {
+    return
+  }
+  rolls.push(dice.roll())
+  rollSingleDiceMultipleTimesAndSum(count-1, dice, rolls)
+  return new SummedRoll(rolls).sum();
 }
 /**
  *
@@ -57,5 +74,5 @@ export const rollSingleDiceMultipleTimesAndSum = (count, dice) => {
  * @return SummedRoll
  */
 export const rollMultipleAndSum = (...dice) => {
-  return new SummedRoll(rollDice(dice))
+  return new SummedRoll(rollDice(...dice)).sum()
 }

@@ -21,7 +21,8 @@ export class SummedRoll {
   #Numbers = Array(0)
   #Sum = -1
   constructor(numbers) {
-    // TODO - Implement the constructor
+    this.#Numbers = numbers
+    this.#Sum = this.#Numbers.reduce((a,b) => a+b, 0)
   }
 
   // Should return an array of numbers
@@ -29,7 +30,7 @@ export class SummedRoll {
     return this.#Numbers
   }
   // Should return a sum of all the roles as a number value
-  get sum() {
+  sum() {
     return this.#Sum
   }
 }

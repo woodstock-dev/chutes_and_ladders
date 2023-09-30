@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { Die } from "./die";
 import {IDie, ISpace, ISummedRoll} from "./interfaces";
 
+
 const GenerateRandomNumber = (upperBound : number) : number => {
-  // TODO - implement generateRandomNumber as it WILL be used by more than the Die class.
-  throw new Error("Method not implemented.");
+  return Math.floor(Math.random() * upperBound) + 1;
 }
 
 /**
@@ -25,17 +26,18 @@ const GenerateRandomNumber = (upperBound : number) : number => {
  * @return number[] each dice that was rolled once.
  */
 const RollDice = (dice : Array<IDie>) : Array<number> => {
-  // TODO - Implement rolling one or more dice once and only once.
-  return []
+  return dice.map(shake => shake.roll())
 }
 
 
-const RollSingleDiceMultipleTimes = (count: number, die: IDie) : Array<number> => {
-  // TODO - Implement rolling a single dice multiple times
-  return []
+const RollSingleDiceMultipleTimes = (count: number, die: IDie, rolls: Array<any> = []) : Array<number> => {
+  if (count == 0) {
+    return
+  }
+  rolls.push(die.roll())
+  RollSingleDiceMultipleTimes(count-1, die, rolls)
+  return rolls
 }
-
-
 
 /**
  *
@@ -43,9 +45,13 @@ const RollSingleDiceMultipleTimes = (count: number, die: IDie) : Array<number> =
  * @param dice one or more dice
  * @return number[][] an array of values
  */
-const RollMultipleDiceMultipleTimes = (totalRolls : number, ...dice : Array<IDie>) : Array<Array<number>> => {
-  // TODO - Implement rolling multiple dice multiple times
-  return [][0]
+const RollMultipleDiceMultipleTimes = (totalRolls : number, rolls: Array<any>, ...dice : Array<IDie>) : Array<Array<number>> => {
+  if (totalRolls === 0) {
+    return
+  }
+  rolls.push(RollDice(dice))
+  RollMultipleDiceMultipleTimes(totalRolls -1, rolls, ...dice)
+  return rolls
 }
 
 /**
@@ -53,9 +59,16 @@ const RollMultipleDiceMultipleTimes = (totalRolls : number, ...dice : Array<IDie
  * @param count number of roles
  * @param die single dice
  */
-const RollSingleDiceMultipleTimesAndSum = (count: number, die: IDie) : ISummedRoll => {
-  // TODO - Implement rolling a single dice multiple times
-  return {} as ISummedRoll
+const RollSingleDiceMultipleTimesAndSum = (count: number, die: IDie, rolls: Array<any>) : ISummedRoll => {
+  if (count === 0 ) {
+    return 
+  }
+  rolls.push(die.roll())
+  RollSingleDiceMultipleTimesAndSum(count-1, die, rolls)
+  return {
+    rolledValues: rolls,
+    sum: rolls.reduce((a,b) => a+b, 0)
+  } as ISummedRoll
 }
 
 /**
@@ -63,9 +76,12 @@ const RollSingleDiceMultipleTimesAndSum = (count: number, die: IDie) : ISummedRo
  * @param dice
  * @return SummedRoll
  */
-const RollMultipleDiceAndSum = (dice: Array<IDie>) : ISummedRoll => {
-  // TODO implement rolling multiple dice one time and summing their values
-  return {} as ISummedRoll
+const RollMultipleDiceAndSum = (dice: Array<IDie>) : ISummedRoll => { 
+  let values: Array<any> = RollDice(dice) 
+  return {
+    rolledValues: values,
+    sum: values.reduce((a,b) => a+b, 0)
+  } as ISummedRoll
 }
 
 
