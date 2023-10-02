@@ -19,7 +19,7 @@ import { Die } from '../../src/js/model/die'
 describe('Test funcntionality of Die Class', () => {
 
   const D1 = new Die(6)
-  const D2 = new Die(10)
+  const D2 = new Die(4)
 
   const D1_Sides = D1.sides
   const D2_Sides = D2.sides
@@ -34,15 +34,22 @@ describe('Test funcntionality of Die Class', () => {
   })
 
   test('Test roll function with 100 rolls for each die', () => {
-    const D1_Roll = D1.roll()
-    const D2_Roll = D2.roll()
-
+    
     while (min < max) {
+      const D1_Roll = D1.roll()
+      const D2_Roll = D2.roll()
       expect(D1_Roll).toBeGreaterThanOrEqual(minSideValue)
       expect(D1_Roll).toBeLessThanOrEqual(D1_Sides)
 
       expect(D2_Roll).toBeGreaterThanOrEqual(minSideValue)
       expect(D2_Roll).toBeLessThanOrEqual(D2_Sides)
+      min++
+    }
+  })
+
+  test('dieCount in constructor', () => {
+    while (min < max) {
+      expect(new Die.dieCount).toBe(min)
       min++
     }
   })

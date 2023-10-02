@@ -13,9 +13,51 @@
 // limitations under the License.
 
 
-import {Die} from "../../src/ts/model/die";
+import  {Die} from "../../src/ts/model/die";
 
-test('Test die class', () => {
-  throw new Error("Method not implemented.");
+describe ('Test functionality of TS IDie class', () => {
+
+  test('Test side generation', () => {
+
+    const D1 = new Die(6)
+    const D2 = new Die(4)
+  
+    const D1_Sides = D1.Sides
+    const D2_Sides = D2.Sides
+
+    const minSideValue = 1
+    const max = 100 
+    let min = 0
+  
+    expect(D1.Sides).toBe(D1_Sides)
+    expect(D2.Sides).toBe(D2_Sides)
+  })
+
+  test('Test Roll function with 100 rolls for each die', () => {
+
+    const minSideValue = 1
+    const max = 100 
+    let min = 0
+  
+
+    while (min < max) {
+
+      const D1 = new Die(6)
+      const D2 = new Die(4)
+    
+      const D1_Sides = D1.Sides
+      const D2_Sides = D2.Sides
+
+      const D1_Roll = D1.roll()
+      const D2_Roll = D2.roll()
+      expect(D1_Roll).toBeGreaterThanOrEqual(minSideValue)
+      expect(D1_Roll).toBeLessThanOrEqual(D1_Sides)
+
+      expect(D2_Roll).toBeGreaterThanOrEqual(minSideValue)
+      expect(D2_Roll).toBeLessThanOrEqual(D2_Sides)
+      min++
+    }
+  })
+
 })
 

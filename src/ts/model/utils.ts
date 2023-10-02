@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Die } from "./die";
+
 import {IDie, ISpace, ISummedRoll} from "./interfaces";
 
 
@@ -45,12 +45,12 @@ const RollSingleDiceMultipleTimes = (count: number, die: IDie, rolls: Array<any>
  * @param dice one or more dice
  * @return number[][] an array of values
  */
-const RollMultipleDiceMultipleTimes = (totalRolls : number, rolls: Array<any>, ...dice : Array<IDie>) : Array<Array<number>> => {
+const RollMultipleDiceMultipleTimes = (totalRolls : number, dice: Array<IDie>, rolls: Array<any> = [], ) : Array<Array<number>> => {
   if (totalRolls === 0) {
     return
   }
   rolls.push(RollDice(dice))
-  RollMultipleDiceMultipleTimes(totalRolls -1, rolls, ...dice)
+  RollMultipleDiceMultipleTimes(totalRolls -1, dice, rolls)
   return rolls
 }
 
@@ -59,7 +59,7 @@ const RollMultipleDiceMultipleTimes = (totalRolls : number, rolls: Array<any>, .
  * @param count number of roles
  * @param die single dice
  */
-const RollSingleDiceMultipleTimesAndSum = (count: number, die: IDie, rolls: Array<any>) : ISummedRoll => {
+const RollSingleDiceMultipleTimesAndSum = (count: number, die: IDie, rolls: Array<any> = []) : ISummedRoll => {
   if (count === 0 ) {
     return 
   }

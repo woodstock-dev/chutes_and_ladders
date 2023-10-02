@@ -20,7 +20,6 @@ export const generateRandomNumber = (upperBound) => {
   return Math.floor(Math.random() * upperBound) +1
 }
 
-
 /**
  *
  * @param dice the dice to roll
@@ -36,10 +35,8 @@ export const rollDice = (...dice) => {
   return dice.map(shake => shake.roll())
 }
 
-export const rollSingleDiceMultipleTimes = (count, die, rolls = []) => {
-  if (count === 0) {
-    return
-  }
+export const rollSingleDiceMultipleTimes = (count, die, rolls=[]) => {
+  if (count === 0) return
   rolls.push(die.roll())
   rollSingleDiceMultipleTimes(count-1, die, rolls)
   return rolls
@@ -51,22 +48,21 @@ export const rollSingleDiceMultipleTimes = (count, die, rolls = []) => {
  * @param dice one or more dice
  * @return number[][] an array of values
  */
-export const rollMultipleDiceMultipleTimes = (totalRolls, rolls = [], ...dice) => {
-  if (totalRolls === 0) {
-    return
-  }
+export const rollMultipleDiceMultipleTimes = (totalRolls, dice, rolls=[]) => {
+  if (totalRolls === 0) return
   rolls.push(rollDice(...dice))
-  rollMultipleDiceMultipleTimes(totalRolls-1, rolls, ...dice)
+  rollMultipleDiceMultipleTimes(totalRolls -1, dice, rolls)
   return rolls
 }
+// let d1 = new Die(6)
+// let d2 = new Die(4)
+// console.log(rollMultipleDiceMultipleTimes(4,[d1, d2]))
 
-export const rollSingleDiceMultipleTimesAndSum = (count, dice, rolls) => {
-  if (count === 0) {
-    return
-  }
+export const rollSingleDiceMultipleTimesAndSum = (count, dice, rolls=[]) => {
+  if (count === 0) return
   rolls.push(dice.roll())
   rollSingleDiceMultipleTimesAndSum(count-1, dice, rolls)
-  return new SummedRoll(rolls).sum();
+  return new SummedRoll(rolls);
 }
 /**
  *
@@ -74,5 +70,5 @@ export const rollSingleDiceMultipleTimesAndSum = (count, dice, rolls) => {
  * @return SummedRoll
  */
 export const rollMultipleAndSum = (...dice) => {
-  return new SummedRoll(rollDice(...dice)).sum()
+  return new SummedRoll(rollDice(...dice))
 }

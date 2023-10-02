@@ -5,7 +5,8 @@
   "description": "A fun game to teach the various techniques of programming",
   "main": "main.ts",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test-coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "Andrew Klapper",

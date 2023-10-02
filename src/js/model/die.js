@@ -20,8 +20,10 @@ import { generateRandomNumber } from "./utils.js";
 
 export class Die {
   #Sides = -1;
+  static dieCount = 0
   constructor(sides) {
     this.#Sides = sides;
+    Die.dieCount++
   }
   // Should return a number of sides
   get sides() {
@@ -32,4 +34,3 @@ export class Die {
     return generateRandomNumber(this.#Sides)
   }
 }
-
