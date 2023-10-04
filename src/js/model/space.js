@@ -55,7 +55,7 @@ export class Space {
    * @return {string}
    */
   get value() {
-    return this.#Value
+    return Number(this.#Value)
   }
 
   /**
@@ -63,7 +63,7 @@ export class Space {
    * @return {number}
    */
   get type() {
-    if (this.value === '1') return this.#Type = SpaceType.START
+    if (this.#Value === '1') return this.#Type = SpaceType.START
     if (this.#Next === null) return this.#Type = SpaceType.FINISH
     else return this.#Type = SpaceType.NORMAL
   }
@@ -72,14 +72,13 @@ export class Space {
    *
    * @return {Space | null}
    */
-  get next() {
-    this.#Next = Number(this.#Value) +1
-    return new Space(this.#Type, this.#Next)
+  get next() { 
+    return this.#Next
   }
   
   set next(location) {
     this.#Next = location
-    return this.#Next
+    if (location > 10) this.#Next = null
   }
   /**
    *
@@ -127,17 +126,29 @@ export class Space {
   }
 }
 
+
 let s1 = new Space(0, 1)
-let s2 = s1.next
-let s3 = s2.next
-let s4 = s3.next
+let s2 = new Space(0, 2)
+let s3 = new Space(0, 3)
+let s4 = new Space(0, 4)
+s1.next = s2
+s2.next = s3
+s3.next = s4
 
-console.log(s1.type, s2.type, s3.type, s4.type, '-', s1.value, s2.value, s3.value, s4.value)
 
-/*
-// let space = new Space(0,1)
+
+console.log(s1.type, s2.value, s3.value, s4.type, s4.next)
+
+
+let spaces = []
 for (let i = 1; i <= 10; i++) {
-  let space = new Space(0,i)
-  console.log(space.value, 'space-value', space.type, 'space-type', space.next, 'space.next)
+  let space = new Space(0, i)
+  space.next = space.value + 1
+  spaces.push(space)
+  
 }
-*/
+
+for (let space of spaces) {
+  console.log(space.next)
+  space = space.next
+}
