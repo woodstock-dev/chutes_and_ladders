@@ -107,7 +107,7 @@ describe('Test functionality and validity of utils methods', () => {
       const multDiceRolls = rollMultipleDiceMultipleTimes(totalRolls,[D1, D2])
   
       expect(multDiceRolls.length).toBe(totalRolls)   
-      expect(multDiceRolls[min].reduce((a,b) => a+b)).toBeGreaterThanOrEqual(2)
+      expect(multDiceRolls[min].reduce((a,b) => a+b)).toBeGreaterThanOrEqual(minSideValue * 2)
       expect(multDiceRolls[min].reduce((a,b) => a+b)).toBeLessThanOrEqual(D1_Sides + D2_Sides)
       expect(multDiceRolls).toBeInstanceOf(Array)
       min++
@@ -164,5 +164,7 @@ describe('Test functionality and validity of utils methods', () => {
       min++
     }
   })
+
+  console.log("An 8 sided die would be optimum because it would take, at min, 13 rounds if someone were to roll an 8 at each turn. \n Also, each player would have the ability to progress far enough through one row on one turn to increase the probability of landing on a chute or ladder")
 
 })

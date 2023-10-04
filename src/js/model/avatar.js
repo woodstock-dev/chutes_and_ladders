@@ -50,3 +50,7 @@ export class Avatar {
         // TODO - Implement how an Avatar can move between spaces given that it knows it's own location
     }
 }
+
+let A1 = new Avatar('AK', 'Red')
+
+console.log(A1.color)

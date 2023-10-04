@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage lines-valid="65" lines-covered="65" line-rate="1" branches-valid="18" branches-covered="18" branch-rate="1" timestamp="1696207695677" complexity="0" version="0.1">
+<coverage lines-valid="65" lines-covered="65" line-rate="1" branches-valid="18" branches-covered="18" branch-rate="1" timestamp="1696345257648" complexity="0" version="0.1">
   <sources>
     <source>/home/ak475826/projects/wdg/chutes_and_ladders</source>
   </sources>

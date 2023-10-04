@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 import {Player} from "./player.js";
 
 export class SpaceType {
@@ -28,9 +29,10 @@ export class Space {
   #Next = null
   #Special = null
   #Players = Array<Player>(0)
+
   constructor(type, value) {
     this.#Type = type
-    this.#Value = value
+    this.#Value = String(value)
   }
 
   /**
@@ -38,7 +40,7 @@ export class Space {
    * @param avatar
    */
   land(avatar) {
-    // TODO - Implement landing on the space
+    
   }
 
   /**
@@ -61,7 +63,9 @@ export class Space {
    * @return {number}
    */
   get type() {
-    return this.#Type
+    if (this.value === '1') return this.#Type = SpaceType.START
+    if (this.#Next === null) return this.#Type = SpaceType.FINISH
+    else return this.#Type = SpaceType.NORMAL
   }
 
   /**
@@ -69,19 +73,14 @@ export class Space {
    * @return {Space | null}
    */
   get next() {
-    return this.#Next
+    this.#Next = Number(this.#Value) +1
+    return new Space(this.#Type, this.#Next)
   }
-
-  /**
-   *
-   * @param location {Space}
-   * @return {Space} the current space
-   */
+  
   set next(location) {
     this.#Next = location
-    return this
+    return this.#Next
   }
-
   /**
    *
    * @return {Space | null}
@@ -114,7 +113,7 @@ export class Space {
    * @return boolean true if the space has players, false otherwise
    */
   get occupied() {
-    // TODO - implement the logic to determine if the space is occupied
+    
   }
 
   /**
@@ -127,3 +126,18 @@ export class Space {
     return false
   }
 }
+
+let s1 = new Space(0, 1)
+let s2 = s1.next
+let s3 = s2.next
+let s4 = s3.next
+
+console.log(s1.type, s2.type, s3.type, s4.type, '-', s1.value, s2.value, s3.value, s4.value)
+
+/*
+// let space = new Space(0,1)
+for (let i = 1; i <= 10; i++) {
+  let space = new Space(0,i)
+  console.log(space.value, 'space-value', space.type, 'space-type', space.next, 'space.next)
+}
+*/
