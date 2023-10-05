@@ -13,6 +13,8 @@
 // limitations under the License.
 
 
+
+import { Avatar } from "./avatar.js";
 import {Player} from "./player.js";
 
 export class SpaceType {
@@ -39,33 +41,29 @@ export class Space {
    * Is a method to be invoked when an avatar lands (or stops) on a space.
    * @param avatar
    */
-  land(avatar) {
-    
+  land(avatar) { 
+    avatar.location = this
   }
-
   /**
    * Is a method to be invoked when an avatar leaves a space
    */
   leave() {
     // TODO - Implement leaving the space
+    
   }
-
   /**
    *
    * @return {string}
    */
   get value() {
-    return Number(this.#Value)
+    return this.#Value
   }
-
   /**
    *
    * @return {number}
    */
   get type() {
-    if (this.#Value === '1') return this.#Type = SpaceType.START
-    if (this.#Next === null) return this.#Type = SpaceType.FINISH
-    else return this.#Type = SpaceType.NORMAL
+    return this.#Type
   }
 
   /**
@@ -77,8 +75,8 @@ export class Space {
   }
   
   set next(location) {
+    
     this.#Next = location
-    if (location > 10) this.#Next = null
   }
   /**
    *
@@ -87,18 +85,15 @@ export class Space {
   get special() {
     return this.#Special
   }
-
+  
   /**
    *
    * @param location
    * @return {Space} the current space
-   */
-  set special(location) {
+  */
+ set special(location) {
     this.#Special = location
-    return this
   }
-
-
   /**
    *
    * @return {*[]} a copy of the array of players
@@ -107,48 +102,57 @@ export class Space {
     // returns a copy of the players
     return [...this.#Players]
   }
-
   /**
    * @return boolean true if the space has players, false otherwise
    */
   get occupied() {
-    
+    return this.occupied
   }
-
   /**
    *
    * @param validators Array<(space {Space}) => boolean> an array of functions that can validate the space.
    * @return {boolean} true if the space is valid, false otherwise.
-   */
-  validate(validators) {
-    // TODO - Implement a method that validates the spaces state
+  */
+ validate(validators) {
+    if (validators[0].value === '1' && validators[0].type === SpaceType.START) return true
+    if (validators[1].special === s5) return true
     return false
   }
 }
 
 
-let s1 = new Space(0, 1)
-let s2 = new Space(0, 2)
-let s3 = new Space(0, 3)
-let s4 = new Space(0, 4)
-s1.next = s2
-s2.next = s3
+const s1 = new Space(SpaceType.START, '1')
+const Ladder = new Space(SpaceType.LADDER, '2')
+const s3 = new Space(SpaceType.NORMAL, '3')
+const s4 = new Space(SpaceType.NORMAL, '4')
+const s5 = new Space(SpaceType.NORMAL, '5')
+const s6 = new Space(SpaceType.NORMAL, '6')
+const s7 = new Space(SpaceType.NORMAL, '7')
+const s8 = new Space(SpaceType.NORMAL, '8')
+const Chute = new Space(SpaceType.CHUTE, '9')
+const s10 = new Space(SpaceType.FINISH, '10')
+
+s1.next = Ladder
+Ladder.next = s3
+Ladder.special = s5
 s3.next = s4
+s4.next = s5
+s5.next = s6
+s6.next = s7
+s7.next = s8
+s8.next = Chute
+Chute.next = s10
+Chute.special = s3
 
 
 
-console.log(s1.type, s2.value, s3.value, s4.type, s4.next)
+let avatar = new Avatar('test')
+s1.land(avatar)
+avatar.move()
 
+console.log('outside of land', avatar.location.value)
 
-let spaces = []
-for (let i = 1; i <= 10; i++) {
-  let space = new Space(0, i)
-  space.next = space.value + 1
-  spaces.push(space)
-  
-}
+let validators = []
+validators.push(s1, Ladder, s3, s4, s5, s6, s7, s8, Chute, s10)
 
-for (let space of spaces) {
-  console.log(space.next)
-  space = space.next
-}
+console.log(s1.validate(validators))

@@ -31,7 +31,11 @@ export class Avatar implements IAvatar {
     }
 
     move(numberOfSpaces: number): void {
-        // TODO - Implement movement if the Avatar is on a location, otherwise throw an exception
+        while (numberOfSpaces > 0) {
+            this.Location = this.Location.next
+            if (this.Location.special !== null && numberOfSpaces === 1) this.Location = this.location.special
+            numberOfSpaces--
+        }
     }
 
     get name(): string {

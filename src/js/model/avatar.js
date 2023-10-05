@@ -1,6 +1,9 @@
 
 // Add avatar implementations here
 
+// import { SpaceType } from "./space.js";
+
+
 export class Color {
     static UNDEFINED = 0;
     static RED = 1;
@@ -47,10 +50,11 @@ export class Avatar {
     }
 
     move(numberOfSpaces) {
-        // TODO - Implement how an Avatar can move between spaces given that it knows it's own location
+        while (numberOfSpaces > 0) {
+            this.#Location = this.#Location.next
+            if (this.#Location.special !== null && numberOfSpaces === 1) this.#Location = this.location.special
+            numberOfSpaces--
+        }
     }
 }
 
-let A1 = new Avatar('AK', 'Red')
-
-console.log(A1.color)

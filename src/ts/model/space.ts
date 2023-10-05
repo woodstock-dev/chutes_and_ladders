@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { Avatar } from "./avatar";
 import {IAvatar, IPlayer, ISpace, SpaceType} from "./interfaces";
 
 
@@ -22,22 +23,28 @@ export class Space implements ISpace {
   Special : ISpace | null = null;
   Players : Array<IPlayer>;
 
-  constructor(Value: string, Type: SpaceType) {
+  constructor(Type: SpaceType, Value: string) {
     this.Value = Value;
     this.Type = Type;
     this.Players = Array(0);
   }
+  get next(): ISpace {
+    throw new Error("Method not implemented.");
+  }
+  get special(): ISpace {
+    throw new Error("Method not implemented.");
+  }
 
 
   land(avatar: IAvatar): void {
-    // TODO - Implement the method for landing on the space
+    avatar.location = this
   }
 
   leave(): void {
     // TODO - Implement the method for leaving the space
   }
 
-  get next(): ISpace {
+  get Next(): ISpace {
     return this.Next;
   }
 
@@ -46,7 +53,7 @@ export class Space implements ISpace {
     return false;
   }
 
-  get special(): ISpace | null {
+  get Special(): ISpace | null {
     return this.Special;
   }
 
@@ -63,3 +70,35 @@ export class Space implements ISpace {
     return this.Value;
   }
 }
+
+const s1 = new Space(SpaceType.START, '1')
+const Ladder = new Space(SpaceType.LADDER, '2')
+const s3 = new Space(SpaceType.NORMAL, '3')
+const s4 = new Space(SpaceType.NORMAL, '4')
+const s5 = new Space(SpaceType.NORMAL, '5')
+const s6 = new Space(SpaceType.NORMAL, '6')
+const s7 = new Space(SpaceType.NORMAL, '7')
+const s8 = new Space(SpaceType.NORMAL, '8')
+const Chute = new Space(SpaceType.CHUTE, '9')
+const s10 = new Space(SpaceType.FINISH, '10')
+
+s1.Next = Ladder
+Ladder.Next = s3
+Ladder.Special = s5
+s3.Next = s4
+s4.Next = s5
+s5.Next = s6
+s6.Next = s7
+s7.Next = s8
+s8.Next = Chute
+Chute.Next = s10
+Chute.Special = s3
+
+
+let avatar = new Avatar('test')
+s1.land(avatar)
+avatar.move(1)
+
+
+
+console.log('outside of land', avatar.location.value)
