@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage lines-valid="64" lines-covered="52" line-rate="0.8125" branches-valid="4" branches-covered="4" branch-rate="1" timestamp="1696714938472" complexity="0" version="0.1">
+<coverage lines-valid="64" lines-covered="52" line-rate="0.8125" branches-valid="4" branches-covered="4" branch-rate="1" timestamp="1696715965726" complexity="0" version="0.1">
   <sources>
     <source>/home/ak475826/projects/wdg/chutes_and_ladders</source>
   </sources>
@@ -152,14 +152,14 @@
                 <line number="98" hits="2"/>
               </lines>
             </method>
-            <method name="(anonymous_9)" hits="45" signature="()V">
+            <method name="(anonymous_9)" hits="52" signature="()V">
               <lines>
-                <line number="105" hits="45"/>
+                <line number="105" hits="52"/>
               </lines>
             </method>
-            <method name="(anonymous_10)" hits="18" signature="()V">
+            <method name="(anonymous_10)" hits="25" signature="()V">
               <lines>
-                <line number="114" hits="18"/>
+                <line number="114" hits="25"/>
               </lines>
             </method>
             <method name="(anonymous_11)" hits="0" signature="()V">
@@ -193,9 +193,9 @@
             <line number="83" hits="9" branch="false"/>
             <line number="90" hits="57" branch="false"/>
             <line number="99" hits="2" branch="false"/>
-            <line number="107" hits="45" branch="false"/>
-            <line number="109" hits="45" branch="false"/>
-            <line number="115" hits="18" branch="false"/>
+            <line number="107" hits="52" branch="false"/>
+            <line number="109" hits="52" branch="false"/>
+            <line number="115" hits="25" branch="false"/>
             <line number="123" hits="0" branch="false"/>
           </lines>
         </class>

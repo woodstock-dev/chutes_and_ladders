@@ -127,6 +127,7 @@ describe('Test of move function starting from beginning space and #Players array
         expect(avatar.location).toEqual(s4)
         expect(s4.players.length).toBe(1)
         expect(s4.occupied).toBeTruthy()
+        expect(s1.occupied).toBeFalsy()
     })
     
     test('Move 4 Spaces, land, leave, occupied', () => {
@@ -138,6 +139,7 @@ describe('Test of move function starting from beginning space and #Players array
         expect(avatar.location).toEqual(s5)
         expect(s5.players.length).toBe(1)
         expect(s5.occupied).toBeTruthy()
+        expect(s1.occupied).toBeFalsy()
     })
     
     test('Move 5 Spaces, land, leave, occupied', () => {
@@ -149,6 +151,7 @@ describe('Test of move function starting from beginning space and #Players array
         expect(avatar.location).toEqual(s6)
         expect(s6.players.length).toBe(1)
         expect(s6.occupied).toBeTruthy()
+        expect(s1.occupied).toBeFalsy()
     })
     
     test('Move 6 Spaces, land, leave, occupied', () => {
@@ -160,6 +163,7 @@ describe('Test of move function starting from beginning space and #Players array
         expect(avatar.location).toEqual(s7)
         expect(s7.players.length).toBe(1)
         expect(s7.occupied).toBeTruthy()
+        expect(s1.occupied).toBeFalsy()
     })
     
     test('Move 7 Spaces, land, leave, occupied', () => {
@@ -171,6 +175,7 @@ describe('Test of move function starting from beginning space and #Players array
         expect(avatar.location).toEqual(s8)
         expect(s8.players.length).toBe(1)
         expect(s8.occupied).toBeTruthy()
+        expect(s1.occupied).toBeFalsy()
     })
     
     test('Move 8 Spaces, land, leave, occupied', () => {
@@ -182,6 +187,7 @@ describe('Test of move function starting from beginning space and #Players array
         expect(avatar.location).toEqual(s3)
         expect(s3.players.length).toBe(1)
         expect(s3.occupied).toBeTruthy()
+        expect(s1.occupied).toBeFalsy()
     })
     
     test('Move 9 Spaces, land, leave, occupied', () => {
@@ -193,5 +199,6 @@ describe('Test of move function starting from beginning space and #Players array
         expect(avatar.location).toEqual(s10)
         expect(s10.players.length).toBe(1)
         expect(s10.occupied).toBeTruthy()
+        expect(s1.occupied).toBeFalsy()
     })        
 })
