@@ -1,8 +1,6 @@
 
 // Add avatar implementations here
 
-// import { SpaceType } from "./space.js";
-
 
 export class Color {
     static UNDEFINED = 0;
@@ -50,11 +48,14 @@ export class Avatar {
     }
 
     move(numberOfSpaces) {
+        let loc = this.#Location
+        loc.leave()
         while (numberOfSpaces > 0) {
-            this.#Location = this.#Location.next
-            if (this.#Location.special !== null && numberOfSpaces === 1) this.#Location = this.location.special
+            loc = loc.next
+            if (loc.special !== null && numberOfSpaces === 1) loc = loc.special
             numberOfSpaces--
         }
+        loc.land(this)
     }
 }
 

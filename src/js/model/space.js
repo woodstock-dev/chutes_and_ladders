@@ -14,7 +14,7 @@
 
 
 
-import { Avatar } from "./avatar.js";
+import { Avatar, Color } from "./avatar.js";
 import {Player} from "./player.js";
 
 export class SpaceType {
@@ -43,13 +43,17 @@ export class Space {
    */
   land(avatar) { 
     avatar.location = this
+    this.avatarOnSpace = []
+    this.avatarOnSpace.push(avatar)
+    this.#Players = this.avatarOnSpace
   }
   /**
    * Is a method to be invoked when an avatar leaves a space
    */
   leave() {
     // TODO - Implement leaving the space
-    
+    this.avatarOnSpace.pop()
+    this.#Players = this.avatarOnSpace
   }
   /**
    *
@@ -100,13 +104,15 @@ export class Space {
    */
   get players() {
     // returns a copy of the players
-    return [...this.#Players]
+    this.playerArr = this.#Players
+    
+    return [...this.playerArr]
   }
   /**
    * @return boolean true if the space has players, false otherwise
    */
   get occupied() {
-    return this.occupied
+    return this.players.length > 0
   }
   /**
    *
@@ -114,45 +120,7 @@ export class Space {
    * @return {boolean} true if the space is valid, false otherwise.
   */
  validate(validators) {
-    if (validators[0].value === '1' && validators[0].type === SpaceType.START) return true
-    if (validators[1].special === s5) return true
     return false
   }
 }
 
-
-const s1 = new Space(SpaceType.START, '1')
-const Ladder = new Space(SpaceType.LADDER, '2')
-const s3 = new Space(SpaceType.NORMAL, '3')
-const s4 = new Space(SpaceType.NORMAL, '4')
-const s5 = new Space(SpaceType.NORMAL, '5')
-const s6 = new Space(SpaceType.NORMAL, '6')
-const s7 = new Space(SpaceType.NORMAL, '7')
-const s8 = new Space(SpaceType.NORMAL, '8')
-const Chute = new Space(SpaceType.CHUTE, '9')
-const s10 = new Space(SpaceType.FINISH, '10')
-
-s1.next = Ladder
-Ladder.next = s3
-Ladder.special = s5
-s3.next = s4
-s4.next = s5
-s5.next = s6
-s6.next = s7
-s7.next = s8
-s8.next = Chute
-Chute.next = s10
-Chute.special = s3
-
-
-
-let avatar = new Avatar('test')
-s1.land(avatar)
-avatar.move()
-
-console.log('outside of land', avatar.location.value)
-
-let validators = []
-validators.push(s1, Ladder, s3, s4, s5, s6, s7, s8, Chute, s10)
-
-console.log(s1.validate(validators))

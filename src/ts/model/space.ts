@@ -44,7 +44,7 @@ export class Space implements ISpace {
     // TODO - Implement the method for leaving the space
   }
 
-  get Next(): ISpace {
+  get next(): ISpace {
     return this.Next;
   }
 
@@ -53,7 +53,7 @@ export class Space implements ISpace {
     return false;
   }
 
-  get Special(): ISpace | null {
+  get special(): ISpace | null {
     return this.Special;
   }
 
@@ -70,7 +70,7 @@ export class Space implements ISpace {
     return this.Value;
   }
 }
-
+/*
 const s1 = new Space(SpaceType.START, '1')
 const Ladder = new Space(SpaceType.LADDER, '2')
 const s3 = new Space(SpaceType.NORMAL, '3')
@@ -102,3 +102,4 @@ avatar.move(1)
 
 
 console.log('outside of land', avatar.location.value)
+*/

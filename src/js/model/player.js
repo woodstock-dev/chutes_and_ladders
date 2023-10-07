@@ -40,5 +40,12 @@ export class Player {
     return this.#Name;
   }
 
+  get avatar() {
+    return this.#Avatar
+  }
+
+  get order() {
+    return this.#Order
+  }
   // TODO - Fill in the remaining getters
 }
