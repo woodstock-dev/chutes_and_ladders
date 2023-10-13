@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-
-import { Avatar, Color } from "./avatar.js";
 import {Player} from "./player.js";
+import { Avatar, Color } from "./avatar.js";
+import { Die } from "./die.js";
 
 export class SpaceType {
   static START = 0;
@@ -30,11 +29,12 @@ export class Space {
   #Type = SpaceType.NORMAL;
   #Next = null
   #Special = null
-  #Players = Array<Player>(0)
+  #Players = []
+  #Previous = null
 
   constructor(type, value) {
     this.#Type = type
-    this.#Value = String(value)
+    this.#Value = value
   }
 
   /**
@@ -43,18 +43,22 @@ export class Space {
    */
   land(avatar) { 
     avatar.location = this
-    this.avatarOnSpace = []
-    this.avatarOnSpace.push(avatar)
-    this.#Players = this.avatarOnSpace
+    this.#Players.push(avatar)
+    this.ifOccupied(avatar)
   }
   /**
    * Is a method to be invoked when an avatar leaves a space
-   */
-  leave() {
-    // TODO - Implement leaving the space
-    this.avatarOnSpace.pop()
-    this.#Players = this.avatarOnSpace
+  */
+ leave() {
+   this.#Players.pop()
   }
+  
+  ifOccupied(avatar) {
+    if (this.#Players.length > 1 && this.type !== SpaceType.START) {
+      this.#Players[0].move(1)
+    }
+  }
+    
   /**
    *
    * @return {string}
@@ -69,7 +73,6 @@ export class Space {
   get type() {
     return this.#Type
   }
-
   /**
    *
    * @return {Space | null}
@@ -79,7 +82,6 @@ export class Space {
   }
   
   set next(location) {
-    
     this.#Next = location
   }
   /**
@@ -103,24 +105,29 @@ export class Space {
    * @return {*[]} a copy of the array of players
    */
   get players() {
-    // returns a copy of the players
-    this.playerArr = this.#Players
-    
-    return [...this.playerArr]
+    return [...this.#Players]
   }
   /**
    * @return boolean true if the space has players, false otherwise
    */
   get occupied() {
-    return this.players.length > 0
+    return this.#Players.length > 0
   }
+
+  get previous() {
+    return this.#Previous
+  }
+
+  set previous(previous) {
+    this.#Previous = previous
+  }
+
   /**
    *
    * @param validators Array<(space {Space}) => boolean> an array of functions that can validate the space.
    * @return {boolean} true if the space is valid, false otherwise.
   */
  validate(validators) {
-    return false
+    
   }
 }
-

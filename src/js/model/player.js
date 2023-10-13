@@ -44,6 +44,10 @@ export class Player {
     return this.#Avatar
   }
 
+  set avatar(avatar) {
+    this.#Avatar = avatar
+  }
+
   get order() {
     return this.#Order
   }
