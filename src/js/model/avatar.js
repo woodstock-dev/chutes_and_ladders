@@ -49,13 +49,12 @@ export class Avatar {
     }
 
     move(numberOfSpaces) {
+    
         let loc = this.location
         loc.leave()
         while(numberOfSpaces > 0) {
             if (loc.next === null) break
             else loc = loc.next
-
-            if (loc.special !== null && numberOfSpaces === 1) loc = loc.special
             numberOfSpaces--
         }
         loc.land(this)

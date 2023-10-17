@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Player} from "./player.js";
 import { Avatar, Color } from "./avatar.js";
-import { Die } from "./die.js";
+
 
 export class SpaceType {
   static START = 0;
@@ -42,20 +41,24 @@ export class Space {
    * @param avatar
    */
   land(avatar) { 
-    avatar.location = this
-    this.#Players.push(avatar)
-    this.ifOccupied(avatar)
+    this.ifOccupied()
+    if (this.#Special !== null) this.#Special.land(avatar)
+    else {
+      this.#Players.push(avatar)
+      avatar.location = this
+    }
   }
   /**
    * Is a method to be invoked when an avatar leaves a space
   */
  leave() {
-   this.#Players.pop()
+    if (this.type === SpaceType.START) this.#Players.shift()
+    else this.#Players.pop()
   }
   
-  ifOccupied(avatar) {
-    if (this.#Players.length > 1 && this.type !== SpaceType.START) {
-      this.#Players[0].move(1)
+  ifOccupied() {
+    if (this.occupied && this.type !== SpaceType.START) {
+      this.players[0].move(1)
     }
   }
     
@@ -131,3 +134,4 @@ export class Space {
     
   }
 }
+
