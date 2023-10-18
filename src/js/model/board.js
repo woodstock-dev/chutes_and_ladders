@@ -6,7 +6,6 @@ Setup is where you design the spaces and run the players through the spaces
 */
 
 import { Space, SpaceType } from "./space.js";
-import { Avatar, Color } from "./avatar.js";
 
 export class Board  {
     #TotalSpaces = 0
@@ -21,28 +20,44 @@ export class Board  {
     get totalSpaces() {
         return this.#TotalSpaces
     }
+
+    get startSpace() {
+        this.#StartSpace = this.boardSetup[0][0]
+        return this.#StartSpace
+    }
     
-    boardSetup() {
+    get boardSetup() {
     
         let totalSpaces = this.#TotalSpaces
         let totalRows = totalSpaces/10
         let space = this.#StartSpace
         let dummyNode = null
-        let spaceType
         let board = []      
         let rowMult = 0
         for (let i = totalRows; i >= 1; i--) {
             let row = []
             for (let j = 1; j<=10;j++) {
                 let spaceVal = j + rowMult
-                if (i === totalRows && j === 1) spaceType = SpaceType.START
-                else if (i === 1 && j === 10) spaceType = SpaceType.FINISH
-                else spaceType = SpaceType.NORMAL
-                if (spaceType !== SpaceType.START) dummyNode = space 
-                space.next = new Space(spaceType, String(spaceVal))
-                space = space.next
-                space.previous = dummyNode
-                row.push(space)
+                if (i === totalRows && j === 1) {
+                    space.previous = dummyNode
+                    row.push(space) 
+                }
+                else {
+                    if (i === 1 && j === 10) {
+                        dummyNode = space
+                        space.next = new Space(SpaceType.FINISH, j)
+                        space = space.next
+                        space.previous = dummyNode
+                        row.push(space)
+                    }
+                    else {
+                        dummyNode = space
+                        space.next = new Space(SpaceType.NORMAL, spaceVal)
+                        space = space.next
+                        space.previous = dummyNode
+                        row.push(space)
+                    } 
+                }
             }
             row = (i%2==0) ? row : row.reverse()
             board.push(row)
@@ -50,9 +65,4 @@ export class Board  {
         }      
         return board
     }
-
-    execute() {
-        return this.boardSetup()[0][0]
-    }
-
 }

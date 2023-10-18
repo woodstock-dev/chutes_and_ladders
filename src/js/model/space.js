@@ -33,7 +33,7 @@ export class Space {
 
   constructor(type, value) {
     this.#Type = type
-    this.#Value = value
+    this.#Value = String(value)
   }
 
   /**
@@ -114,7 +114,7 @@ export class Space {
    * @return boolean true if the space has players, false otherwise
    */
   get occupied() {
-    return this.#Players.length > 0
+    return this.players.length > 0
   }
 
   get previous() {
