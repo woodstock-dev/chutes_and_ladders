@@ -27,8 +27,7 @@ export class Board {
   }
 
   randomSpaceSelector(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min)
-    
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   get boardSetup() {
@@ -38,15 +37,15 @@ export class Board {
     let dummyNode = null;
     let board = [];
     let rowMult = 0;
-    let ladders = []
-    let lCount = 1
-    let chutes = []
-    let cCount = 1
+    let ladders = [];
+    let lCount = 1;
+    let chutes = [];
+    let cCount = 1;
 
     for (let i = totalRows; i >= 1; i--) {
       let row = [];
-      let l = this.randomSpaceSelector(1,10) 
-      let c = this.randomSpaceSelector(0,10) 
+      let l = this.randomSpaceSelector(1, 10);
+      let c = this.randomSpaceSelector(0, 10);
       for (let j = 1; j <= 10; j++) {
         let spaceVal = j + rowMult + 1;
         row.push(space);
@@ -54,28 +53,25 @@ export class Board {
           space.next = new Space(SpaceType.FINISH, "Finish");
           space = space.next;
           space.previous = dummyNode;
-          break
-        }
-        else if (i % 2 === 0 && l === j) {
-          console.log(lCount)
-          dummyNode = space
-          space.special = space
-          ladders.push(space.special)
-          space.next = new Space(SpaceType.LADDER, `Ladder ${lCount}`)
-          space = space.next
-          space.previous = dummyNode
-          lCount++
-        } 
-        else if (i % 2 !== 0 && c === j) {
-          dummyNode = space
-          space.special = space
-          chutes.push(space.special)
-          space.next = new Space(SpaceType.CHUTE, `Chute ${cCount}`)
-          space = space.next
-          space.previous = dummyNode
-          cCount++
-        }
-        else {
+          break;
+        } else if (i % 2 === 0 && l === j) {
+          console.log(lCount);
+          dummyNode = space;
+          space.special = space;
+          ladders.push(space.special);
+          space.next = new Space(SpaceType.LADDER, `Ladder ${lCount}`);
+          space = space.next;
+          space.previous = dummyNode;
+          lCount++;
+        } else if (i % 2 !== 0 && c === j) {
+          dummyNode = space;
+          space.special = space;
+          chutes.push(space.special);
+          space.next = new Space(SpaceType.CHUTE, `Chute ${cCount}`);
+          space = space.next;
+          space.previous = dummyNode;
+          cCount++;
+        } else {
           dummyNode = space;
           space.next = new Space(SpaceType.NORMAL, spaceVal);
           space = space.next;
@@ -87,7 +83,6 @@ export class Board {
       rowMult += 10;
     }
     return board;
-    
   }
   get displaySpaces() {
     let space = this.boardSetup.reverse();

@@ -21,18 +21,16 @@ beforeEach(() => {
 
   die = new Die(8);
   rollValue = die.roll();
-
 });
 
 describe("Test connectivity of spaces within Board", () => {
   test("Test Next method of all Spaces", () => {
     while (start) {
-      expect(start).not.toBeNull()
-      expect(start).toBeInstanceOf(Space)
-      start = start.next
+      expect(start).not.toBeNull();
+      expect(start).toBeInstanceOf(Space);
+      start = start.next;
     }
   });
-
 
   test("Test Previous method", () => {
     expect(start.previous).toBeNull();
@@ -43,17 +41,16 @@ describe("Test connectivity of spaces within Board", () => {
     expect(board.totalSpaces).toEqual(expect.any(Number));
   });
 
-  test('SpaceType Start', () => {
-    expect(start.type).toBe(SpaceType.START)
-  })
+  test("SpaceType Start", () => {
+    expect(start.type).toBe(SpaceType.START);
+  });
 
-  test('SpaceType Finish', () => {
+  test("SpaceType Finish", () => {
     while (start.next) {
-      start = start.next
+      start = start.next;
     }
-    expect(start.type).toBe(SpaceType.FINISH)
-  })
-
+    expect(start.type).toBe(SpaceType.FINISH);
+  });
 
   test("Avatar position / space recognition after Die roll method", () => {
     avatar1.move(rollValue);

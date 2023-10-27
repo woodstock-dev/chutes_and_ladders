@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-
-
 export class SpaceType {
   static START = 0;
   static NORMAL = 1;
@@ -24,115 +21,111 @@ export class SpaceType {
 }
 
 export class Space {
-  #Value = ""
+  #Value = "";
   #Type = SpaceType.NORMAL;
-  #Next = null
-  #Special = null
-  #Players = []
-  #Previous = null
+  #Next = null;
+  #Special = null;
+  #Players = [];
+  #Previous = null;
 
   constructor(type, value) {
-    this.#Type = type
-    this.#Value = String(value)
+    this.#Type = type;
+    this.#Value = String(value);
   }
 
   /**
    * Is a method to be invoked when an avatar lands (or stops) on a space.
    * @param avatar
    */
-  land(avatar) { 
-    this.ifOccupied()
-    if (this.#Special !== null) this.#Special.land(avatar)
+  land(avatar) {
+    this.ifOccupied();
+    if (this.#Special !== null) this.#Special.land(avatar);
     else {
-      this.#Players.push(avatar)
-      avatar.location = this
+      this.#Players.push(avatar);
+      avatar.location = this;
     }
   }
   /**
    * Is a method to be invoked when an avatar leaves a space
-  */
- leave() {
-    if (this.type === SpaceType.START) this.#Players.shift()
-    else this.#Players.pop()
+   */
+  leave() {
+    if (this.type === SpaceType.START) this.#Players.shift();
+    else this.#Players.pop();
   }
-  
+
   ifOccupied() {
     if (this.occupied && this.type !== SpaceType.START) {
-      this.players[0].move(1)
+      this.players[0].move(1);
     }
   }
-    
+
   /**
    *
    * @return {string}
    */
   get value() {
-    return this.#Value
+    return this.#Value;
   }
   /**
    *
    * @return {number}
    */
   get type() {
-    return this.#Type
+    return this.#Type;
   }
   /**
    *
    * @return {Space | null}
    */
-  get next() { 
-    return this.#Next
+  get next() {
+    return this.#Next;
   }
-  
+
   set next(location) {
-    this.#Next = location
+    this.#Next = location;
   }
   /**
    *
    * @return {Space | null}
    */
   get special() {
-    return this.#Special
+    return this.#Special;
   }
-  
+
   /**
    *
    * @param location
    * @return {Space} the current space
-  */
- set special(location) {
-    this.#Special = location
+   */
+  set special(location) {
+    this.#Special = location;
   }
   /**
    *
    * @return {*[]} a copy of the array of players
    */
   get players() {
-    return [...this.#Players]
+    return [...this.#Players];
   }
   /**
    * @return boolean true if the space has players, false otherwise
    */
   get occupied() {
-    return this.players.length > 0
+    return this.players.length > 0;
   }
 
   get previous() {
-    return this.#Previous
+    return this.#Previous;
   }
 
   set previous(previous) {
-    this.#Previous = previous
+    this.#Previous = previous;
   }
 
   /**
    *
    * @param validators Array<(space {Space}) => boolean> an array of functions that can validate the space.
    * @return {boolean} true if the space is valid, false otherwise.
-  */
- validate(validators) {
-    
-  }
+   */
+  validate(validators) {}
 }
-
-

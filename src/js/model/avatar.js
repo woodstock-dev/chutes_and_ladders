@@ -1,59 +1,58 @@
 export class Color {
-    static UNDEFINED = 0;
-    static RED = 1;
-    static BLACK = 2;
-    static BROWN = 3;
-    static BLUE = 4;
-    static GREEN = 5;
-    static PURPLE = 6;
-    static WHITE = 7;
-    static YELLOW = 8;
-    static ORANGE = 9;
-    static PINK = 10;
+  static UNDEFINED = 0;
+  static RED = 1;
+  static BLACK = 2;
+  static BROWN = 3;
+  static BLUE = 4;
+  static GREEN = 5;
+  static PURPLE = 6;
+  static WHITE = 7;
+  static YELLOW = 8;
+  static ORANGE = 9;
+  static PINK = 10;
 }
 
 export class Avatar {
-    #Location = null;
-    #Name = "";
-    #Color = Color.UNDEFINED;
+  #Location = null;
+  #Name = "";
+  #Color = Color.UNDEFINED;
 
-    /**
-     *
-     * @param name the name of the avatar example: Car, Top Hat, Black Cat, etc
-     * @param color the color of the avatar
-     */
-    constructor(name, color) {
-        this.#Name = name
-        this.#Color = color
-    }
+  /**
+   *
+   * @param name the name of the avatar example: Car, Top Hat, Black Cat, etc
+   * @param color the color of the avatar
+   */
+  constructor(name, color) {
+    this.#Name = name;
+    this.#Color = color;
+  }
 
-    get name() {
-        return this.#Name
-    }
+  get name() {
+    return this.#Name;
+  }
 
-    get location() {
-        return this.#Location
-    }
+  get location() {
+    return this.#Location;
+  }
 
-    get color() {
-        return this.#Color;
-    }
+  get color() {
+    return this.#Color;
+  }
 
-    set location(loc) {
-        this.#Location = loc
-    }
+  set location(loc) {
+    this.#Location = loc;
+  }
 
-    move(numberOfSpaces) {
-    
-        let loc = this.#Location
-        this.#Location.leave()
-        while(numberOfSpaces > 0) {
-            if (loc.next === null) break
-            else {
-                loc = loc.next
-            }
-            numberOfSpaces--
-        }
-        loc.land(this)
+  move(numberOfSpaces) {
+    let loc = this.#Location;
+    this.location.leave();
+    while (numberOfSpaces > 0) {
+      if (loc.next === null) break;
+      else {
+        loc = loc.next;
+      }
+      numberOfSpaces--;
     }
+    loc.land(this);
+  }
 }
