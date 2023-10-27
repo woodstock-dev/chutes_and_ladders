@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Should take a number argument >= 1 and return a number value
-import {SummedRoll} from "./summed_roll.js";
+import {SummedRoll} from "./summed_roll";
 
 
 export const generateRandomNumber = (upperBound) => {
@@ -72,3 +72,4 @@ export const rollSingleDiceMultipleTimesAndSum = (count, dice, rolls=[]) => {
 export const rollMultipleAndSum = (...dice) => {
   return new SummedRoll(rollDice(...dice))
 }
+

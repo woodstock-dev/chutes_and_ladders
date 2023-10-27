@@ -1,8 +1,3 @@
-
-// Add avatar implementations here
-
-
-
 export class Color {
     static UNDEFINED = 0;
     static RED = 1;
@@ -50,14 +45,15 @@ export class Avatar {
 
     move(numberOfSpaces) {
     
-        let loc = this.location
-        loc.leave()
+        let loc = this.#Location
+        this.#Location.leave()
         while(numberOfSpaces > 0) {
             if (loc.next === null) break
-            else loc = loc.next
+            else {
+                loc = loc.next
+            }
             numberOfSpaces--
         }
         loc.land(this)
     }
 }
-

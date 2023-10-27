@@ -18,7 +18,7 @@
  * Player 2 rolls a single dice 3 times and gets the values { [6, 3, 3], 12 }
  */
 export class SummedRoll {
-  #Numbers = Array(0)
+  #Numbers = []
   #Sum = -1
   constructor(numbers) {
     this.#Numbers = numbers

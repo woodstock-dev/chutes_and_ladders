@@ -1,5 +1,3 @@
-
-import { Avatar, Color } from "./avatar";
 import { Space, SpaceType } from "./space";
 
 /**
@@ -26,38 +24,10 @@ export const ValidateLadder = (space) => {
     return space !== undefined && space.type === SpaceType.LADDER && space.special !== null
 }
 
-export const ValidateLand = (space, avatar) => {
-    return avatar.location = space && space.occupied === true
+export const ValidateSpace = (space) => {
+    return space !== undefined && space.type === SpaceType.NORMAL && space.next !== null
 }
 
-export const ValidateLeave = (space) => {
-    space.leave()
-    return space.occupied === false
-}
-
-export const ValidateNextNormal = (space) => {
-    return space = space.next
-}
-
-export const ValidateNextSpecial = (space) => {
-    if (space.next.special !== null) return space = space.next.special
-}
-
-
-/**
- * 
- * @param {Avatar} avatar test the avatar methods
- * @returns true if valid, false if not
- * 
- */
-
-export const ValidateAvatarColor = (avatar) => {
-    return avatar.color > 0 && avatar.color < 11
-}
-
-export const ValidateAvatarName = (avatar) => {
-    return typeof avatar.name === 'string'
-}
 
 //NO IDEA HOW TO PUT THEM ALL TOGETHER, ALL THE ARGUMENTS ARE DIFFERENT
 // export const ValidateValues = (space, avatar) => {

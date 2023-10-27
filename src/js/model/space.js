@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Avatar, Color } from "./avatar.js";
+
 
 
 export class SpaceType {
@@ -134,4 +134,5 @@ export class Space {
     
   }
 }
+
 
