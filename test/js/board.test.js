@@ -14,7 +14,7 @@ beforeEach(() => {
   board = new Board(100, new Space(SpaceType.START, "Start"));
   avatar1 = new Avatar("Test Car", Color.RED);
   avatar2 = new Avatar("Test Hat", Color.BLACK);
-  start = board.gameStartSpace;
+  start = board.startSpace;
 
   start.land(avatar1);
   start.land(avatar2);
@@ -25,11 +25,8 @@ beforeEach(() => {
 
 describe("Test connectivity of spaces within Board", () => {
   test("Test Next method of all Spaces", () => {
-    while (start) {
-      expect(start).not.toBeNull();
-      expect(start).toBeInstanceOf(Space);
-      start = start.next;
-    }
+    expect(start).not.toBeNull();
+    expect(start).toBeInstanceOf(Space);
   });
 
   test("Test Previous method", () => {
@@ -52,6 +49,27 @@ describe("Test connectivity of spaces within Board", () => {
     expect(start.type).toBe(SpaceType.FINISH);
   });
 
+  test("Space.Special", () => {
+    while (start) {
+      if (start.special) expect(start.special).toBeInstanceOf(Space);
+      start = start.next;
+    }
+  });
+
+  test("SpaceType Chute", () => {
+    while (start) {
+      if (start.value === "Chute") expect(start.type).toBe(SpaceType.CHUTE);
+      start = start.next;
+    }
+  });
+
+  test("SpaceType Ladder", () => {
+    while (start) {
+      if (start.value === "Chute") expect(start.type).toBe(SpaceType.CHUTE);
+      start = start.next;
+    }
+  });
+
   test("Avatar position / space recognition after Die roll method", () => {
     avatar1.move(rollValue);
     avatar2.move(rollValue);
@@ -64,5 +82,7 @@ describe("Test connectivity of spaces within Board", () => {
 
     expect(avatar1Space).toBe(start.next);
     expect(avatar2Space).toBe(start);
+    expect(start.occupied).toBeTruthy();
+    expect(start.next.occupied).toBeTruthy();
   });
 });
