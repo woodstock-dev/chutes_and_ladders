@@ -58,7 +58,7 @@ export class Board {
       value = "Start";
     }
 
-    space.previous = new Space(spaceType, `${value}`);
+    return new Space(spaceType, `${value}`);
   }
 
   chuteSpaceConnector() {
@@ -101,7 +101,7 @@ export class Board {
     let board = [space];
 
     for (let i = totalSpaces - 1; i >= 1; i--) {
-      this.spaceMaker(space, i);
+      space.previous = this.spaceMaker(space, i);
       space.previous.next = space;
       space = space.previous;
       board.push(space);
@@ -114,11 +114,22 @@ export class Board {
   }
 
   get displaySpaces() {
-    let board = this.boardSetup;
-    let row = [];
-    let display = [];
-    board.forEach((space, idx) => {
-      row.push(space);
-    });
+    let total = 100;
+    let boardDisplay = [];
+    for (let i = 10; i >= 1; i--) {
+      let row = [];
+      for (let j = 1; j <= 10; j++) {
+        row.push(total--);
+      }
+      row = i % 2 == 0 ? row : row.reverse();
+      boardDisplay.push(row);
+    }
+    return boardDisplay
+      .map((row, idx) => {
+        if (idx === 9) return row.join("  ");
+        if (idx === 0) return row.join(" ");
+        return row.join(" ");
+      })
+      .join("\n ");
   }
 }
