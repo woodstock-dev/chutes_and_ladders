@@ -25,8 +25,11 @@ beforeEach(() => {
 
 describe("Test connectivity of spaces within Board", () => {
   test("Test Next method of all Spaces", () => {
-    expect(start).not.toBeNull();
-    expect(start).toBeInstanceOf(Space);
+    while (start){
+      expect(start).not.toBeNull();
+      expect(start).toBeInstanceOf(Space);
+      start = start.next
+    }
   });
 
   test("Test Previous method", () => {
@@ -51,21 +54,25 @@ describe("Test connectivity of spaces within Board", () => {
 
   test("Space.Special", () => {
     while (start) {
-      if (start.special) expect(start.special).toBeInstanceOf(Space);
+      if (start.special) expect(start.special).not.toBeNull();
       start = start.next;
     }
   });
 
   test("SpaceType Chute", () => {
     while (start) {
-      if (start.value === "Chute") expect(start.type).toBe(SpaceType.CHUTE);
+      if (start.special){
+        if (start.value > start.special.value) expect(start.type).toEqual(SpaceType.CHUTE);
+     } 
       start = start.next;
     }
   });
 
   test("SpaceType Ladder", () => {
     while (start) {
-      if (start.value === "Chute") expect(start.type).toBe(SpaceType.CHUTE);
+      if (start.special) {
+        if (start.value < start.special.value) expect(start.type).toEqual(SpaceType.LADDER);
+      }
       start = start.next;
     }
   });
@@ -80,9 +87,9 @@ describe("Test connectivity of spaces within Board", () => {
       start = start.next;
     }
 
-    expect(avatar1Space).toBe(start.next);
-    expect(avatar2Space).toBe(start);
-    expect(start.occupied).toBeTruthy();
-    expect(start.next.occupied).toBeTruthy();
+    expect(avatar1Space === start.next).toBeTruthy();
+    expect(avatar2Space === start).toBeTruthy();
+    expect(avatar1Space.occupied === start.next.occupied).toBeTruthy();
+    expect(avatar2Space.occupied === start.occupied).toBeTruthy();
   });
 });

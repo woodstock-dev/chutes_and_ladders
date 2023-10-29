@@ -25,20 +25,25 @@ export class Board {
   }
 
   get startSpace() {
-    return this.boardSetup[this.boardSetup.length - 1];
+    return this.boardSetup;
   }
 
   randomSelector(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
   }
 
-  spaceMaker(space, value) {
+  spaceMaker(value) {
     let isSpecialSpace = false;
     let spaceType = SpaceType.NORMAL;
 
     let specialSpaceSelector = this.randomSelector(0, 20);
 
-    if (specialSpaceSelector === 7 || specialSpaceSelector === 14) {
+    if (value === 1) {
+      spaceType = SpaceType.START;
+      value = "Start";
+    }
+
+    else if (specialSpaceSelector === 7 || specialSpaceSelector === 14) {
       let chuteOrLadderSelector = this.randomSelector(0, 2);
       if (chuteOrLadderSelector === 0 && value > 10 && !isSpecialSpace) {
         spaceType = SpaceType.CHUTE;
@@ -51,11 +56,6 @@ export class Board {
         isSpecialSpace = true;
       }
       isSpecialSpace = false;
-    }
-
-    if (value === 1) {
-      spaceType = SpaceType.START;
-      value = "Start";
     }
 
     return new Space(spaceType, `${value}`);
@@ -98,23 +98,21 @@ export class Board {
   get boardSetup() {
     let totalSpaces = this.#TotalSpaces;
     let space = new Space(SpaceType.FINISH, "Finish");
-    let board = [space];
 
     for (let i = totalSpaces - 1; i >= 1; i--) {
-      space.previous = this.spaceMaker(space, i);
+      space.previous = this.spaceMaker(i);
       space.previous.next = space;
       space = space.previous;
-      board.push(space);
     }
 
     this.chuteSpaceConnector();
     this.ladderSpaceConnector();
-    this.#Board = board;
-    return this.#Board;
+
+    return space
   }
 
   get displaySpaces() {
-    let total = 100;
+    let total = this.#TotalSpaces
     let boardDisplay = [];
     for (let i = 10; i >= 1; i--) {
       let row = [];
@@ -126,9 +124,9 @@ export class Board {
     }
     return boardDisplay
       .map((row, idx) => {
-        if (idx === 9) return row.join("  ");
-        if (idx === 0) return row.join(" ");
-        return row.join(" ");
+        if (idx === 9) return row.join("    ");
+        if (idx === 0) return row.join("   ");
+        return row.join("   ");
       })
       .join("\n ");
   }
