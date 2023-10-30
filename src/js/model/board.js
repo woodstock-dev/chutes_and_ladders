@@ -3,9 +3,8 @@ import { Space, SpaceType } from "./space.js";
 export class Board {
   #TotalSpaces = 0;
   #StartSpace = null;
-  #Chutes = []
-  #Ladders = []
-
+  #Chutes = [];
+  #Ladders = [];
 
   constructor(totalSpaces, startSpace) {
     this.#TotalSpaces = totalSpaces;
@@ -17,8 +16,8 @@ export class Board {
   }
 
   get startSpace() {
-    this.boardSetup
-    return this.#StartSpace
+    this.boardSetup;
+    return this.#StartSpace;
   }
 
   randomSelector(min, max) {
@@ -30,8 +29,7 @@ export class Board {
     let spaceType = SpaceType.NORMAL;
     let specialSpaceSelector = this.randomSelector(0, 20);
 
-    if (value === 1) return this.#StartSpace
-
+    if (value === 1) return this.#StartSpace;
     else if (specialSpaceSelector === 7 || specialSpaceSelector === 14) {
       let chuteOrLadderSelector = this.randomSelector(0, 2);
       if (chuteOrLadderSelector === 0 && value > 10 && !isSpecialSpace) {
@@ -47,7 +45,7 @@ export class Board {
       isSpecialSpace = false;
     }
 
-    return new Space (spaceType, value)
+    return new Space(spaceType, value);
   }
 
   chuteSpaceConnector() {
@@ -55,15 +53,15 @@ export class Board {
     let dummyNode = null;
 
     for (let i = 0; i < chutes.length; i++) {
-      let special = chutes[i][1]
-      dummyNode = chutes[i][0]
+      let special = chutes[i][1];
+      dummyNode = chutes[i][0];
 
       while (special > 0) {
-        dummyNode = dummyNode.previous
-        special--
+        dummyNode = dummyNode.previous;
+        special--;
       }
-      if (dummyNode.type !== SpaceType.NORMAL) dummyNode = dummyNode.previous
-      chutes[i][0].special = dummyNode
+      if (dummyNode.type !== SpaceType.NORMAL) dummyNode = dummyNode.previous;
+      chutes[i][0].special = dummyNode;
     }
   }
 
@@ -72,15 +70,15 @@ export class Board {
     let dummyNode = null;
 
     for (let i = 0; i < ladders.length; i++) {
-      let special = ladders[i][1]
-      dummyNode = ladders[i][0]
+      let special = ladders[i][1];
+      dummyNode = ladders[i][0];
 
       while (special > 0) {
-        dummyNode = dummyNode.next
-        special--
+        dummyNode = dummyNode.next;
+        special--;
       }
-      if (dummyNode.type !== SpaceType.NORMAL) dummyNode = dummyNode.next
-      ladders[i][0].special = dummyNode
+      if (dummyNode.type !== SpaceType.NORMAL) dummyNode = dummyNode.next;
+      ladders[i][0].special = dummyNode;
     }
   }
 
@@ -92,24 +90,23 @@ export class Board {
       space.previous = this.spaceMaker(i);
       space.previous.next = space;
       if (space.type === SpaceType.CHUTE) {
-        let special = this.randomSelector(10, i-1)
-        this.#Chutes.push([space,special])
+        let special = this.randomSelector(10, i - 1);
+        this.#Chutes.push([space, special]);
       }
       if (space.type === SpaceType.LADDER) {
-        let special = this.randomSelector(10, 99 - i)
-        this.#Ladders.push([space, special])
-      } 
+        let special = this.randomSelector(10, 99 - i);
+        this.#Ladders.push([space, special]);
+      }
       space = space.previous;
-    }      
+    }
 
     this.chuteSpaceConnector();
     this.ladderSpaceConnector();
-    
   }
 
   //I was having fun with this. I know it will not work for anything other than a 10x10 board
   get displaySpaces() {
-    let total = this.#TotalSpaces
+    let total = this.#TotalSpaces;
     let boardDisplay = [];
     for (let i = 10; i >= 1; i--) {
       let row = [];
@@ -121,10 +118,10 @@ export class Board {
     }
     return boardDisplay
       .map((row, idx) => {
-        if (idx === boardDisplay.length-1) return row.join("    ");
+        if (idx === boardDisplay.length - 1) return row.join("    ");
         if (idx === 0) return row.join("   ");
         return row.join("   ");
-      }).join('\n ')
-      ;
+      })
+      .join("\n ");
   }
 }
