@@ -107,6 +107,7 @@ export class Board {
     
   }
 
+  //I was having fun with this. I know it will not work for anything other than a 10x10 board
   get displaySpaces() {
     let total = this.#TotalSpaces
     let boardDisplay = [];
