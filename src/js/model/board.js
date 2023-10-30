@@ -1,19 +1,11 @@
-/*
-Only needs to have a start space and number of spaces
-Test in beforeAll - reset after each test
-
-Setup is where you design the spaces and run the players through the spaces
-*/
-
-import { Avatar, Color } from "./avatar.js";
 import { Space, SpaceType } from "./space.js";
 
 export class Board {
   #TotalSpaces = 0;
   #StartSpace = null;
-  #Board = [];
-  #Chutes = [];
-  #Ladders = [];
+  #Chutes = []
+  #Ladders = []
+
 
   constructor(totalSpaces, startSpace) {
     this.#TotalSpaces = totalSpaces;
@@ -25,7 +17,8 @@ export class Board {
   }
 
   get startSpace() {
-    return this.boardSetup;
+    this.boardSetup
+    return this.#StartSpace
   }
 
   randomSelector(min, max) {
@@ -35,13 +28,9 @@ export class Board {
   spaceMaker(value) {
     let isSpecialSpace = false;
     let spaceType = SpaceType.NORMAL;
-
     let specialSpaceSelector = this.randomSelector(0, 20);
 
-    if (value === 1) {
-      spaceType = SpaceType.START;
-      value = "Start";
-    }
+    if (value === 1) return this.#StartSpace
 
     else if (specialSpaceSelector === 7 || specialSpaceSelector === 14) {
       let chuteOrLadderSelector = this.randomSelector(0, 2);
@@ -58,40 +47,40 @@ export class Board {
       isSpecialSpace = false;
     }
 
-    return new Space(spaceType, `${value}`);
+    return new Space (spaceType, value)
   }
 
   chuteSpaceConnector() {
-    let chutes = [];
+    let chutes = this.#Chutes;
     let dummyNode = null;
-    let cur = this.#Board;
-    for (let i = 0; i < this.#Board.length; i++) {
-      if (cur[i].type === SpaceType.CHUTE) chutes.push(cur[i]);
-    }
+
     for (let i = 0; i < chutes.length; i++) {
-      dummyNode = chutes[i];
-      for (let j = 0; j < 10; j++) {
-        dummyNode = dummyNode.previous;
+      let special = chutes[i][1]
+      dummyNode = chutes[i][0]
+
+      while (special > 0) {
+        dummyNode = dummyNode.previous
+        special--
       }
-      chutes[i].special = dummyNode;
+      if (dummyNode.type !== SpaceType.NORMAL) dummyNode = dummyNode.previous
+      chutes[i][0].special = dummyNode
     }
   }
 
   ladderSpaceConnector() {
-    let ladders = [];
+    let ladders = this.#Ladders;
     let dummyNode = null;
-    let cur = this.#Board;
-
-    for (let i = 0; i < this.#Board.length; i++) {
-      if (cur[i].type === SpaceType.LADDER) ladders.push(cur[i]);
-    }
 
     for (let i = 0; i < ladders.length; i++) {
-      dummyNode = ladders[i];
-      for (let j = 0; j < 10; j++) {
-        dummyNode = dummyNode.next;
+      let special = ladders[i][1]
+      dummyNode = ladders[i][0]
+
+      while (special > 0) {
+        dummyNode = dummyNode.next
+        special--
       }
-      ladders[i].special = dummyNode;
+      if (dummyNode.type !== SpaceType.NORMAL) dummyNode = dummyNode.next
+      ladders[i][0].special = dummyNode
     }
   }
 
@@ -102,13 +91,20 @@ export class Board {
     for (let i = totalSpaces - 1; i >= 1; i--) {
       space.previous = this.spaceMaker(i);
       space.previous.next = space;
+      if (space.type === SpaceType.CHUTE) {
+        let special = this.randomSelector(10, i-1)
+        this.#Chutes.push([space,special])
+      }
+      if (space.type === SpaceType.LADDER) {
+        let special = this.randomSelector(10, 99 - i)
+        this.#Ladders.push([space, special])
+      } 
       space = space.previous;
-    }
+    }      
 
     this.chuteSpaceConnector();
     this.ladderSpaceConnector();
-
-    return space
+    
   }
 
   get displaySpaces() {
@@ -124,10 +120,10 @@ export class Board {
     }
     return boardDisplay
       .map((row, idx) => {
-        if (idx === 9) return row.join("    ");
+        if (idx === boardDisplay.length-1) return row.join("    ");
         if (idx === 0) return row.join("   ");
         return row.join("   ");
-      })
-      .join("\n ");
+      }).join('\n ')
+      ;
   }
 }
