@@ -102,24 +102,34 @@ export class Board {
     this.ladderSpaceConnector();
   }
 
-  //I was having fun with this. I know it will not work for anything other than a 10x10 board
+  //This will work for any square number board
   get displaySpaces() {
-    let total = this.#TotalSpaces;
+    let totalSpaces = this.#TotalSpaces
+    const rowTotal = Math.sqrt(totalSpaces)
     let boardDisplay = [];
-    for (let i = 10; i >= 1; i--) {
+    let space = ' '
+    let newLine = '\n'
+
+    for (let i = rowTotal; i >= 1; i--) {
       let row = [];
-      for (let j = 1; j <= 10; j++) {
-        row.push(total--);
-      }
+      for (let j = 1; j <= rowTotal; j++) {
+        if (i === rowTotal) {
+          row.push(`${totalSpaces}`.padStart(3))
+        }
+        else if (i === 1) {
+          row.push(`${totalSpaces}`.padStart(3))    
+          }
+        else row.push(`${totalSpaces}`.padStart(3))
+      totalSpaces--
+    }
       row = i % 2 == 0 ? row : row.reverse();
       boardDisplay.push(row);
     }
-    return boardDisplay
-      .map((row, idx) => {
-        if (idx === boardDisplay.length - 1) return row.join("    ");
-        if (idx === 0) return row.join("   ");
-        return row.join("   ");
-      })
-      .join("\n ");
+    
+    return boardDisplay.map(row => row.join(space)).join(newLine)
   }
 }
+
+let board = new Board(100, new Space(SpaceType.START, "Start"));
+
+console.log(board.displaySpaces);
