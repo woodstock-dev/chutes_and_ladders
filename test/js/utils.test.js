@@ -32,8 +32,8 @@ beforeEach(() => {
   minSideValue = 1;
   max = 100;
   min = 0;
-  count = 10
-  totalRolls = 10
+  count = 10;
+  totalRolls = 10;
 });
 
 describe("Test functionality and validity of utils methods", () => {
@@ -77,8 +77,12 @@ describe("Test functionality and validity of utils methods", () => {
       const multDiceRolls = rollMultipleDiceMultipleTimes(totalRolls, [D1, D2]);
 
       expect(multDiceRolls.length).toBe(totalRolls);
-      expect(multDiceRolls[min].reduce((a, b) => a + b)).toBeGreaterThanOrEqual(minSideValue * 2);
-      expect(multDiceRolls[min].reduce((a, b) => a + b)).toBeLessThanOrEqual(D1_Sides + D2_Sides);
+      expect(multDiceRolls[min].reduce((a, b) => a + b)).toBeGreaterThanOrEqual(
+        minSideValue * 2
+      );
+      expect(multDiceRolls[min].reduce((a, b) => a + b)).toBeLessThanOrEqual(
+        D1_Sides + D2_Sides
+      );
       expect(multDiceRolls).toBeInstanceOf(Array);
       min++;
     }
@@ -86,8 +90,14 @@ describe("Test functionality and validity of utils methods", () => {
 
   test("Test rollSingleDiceMultipleTimesAndSum function", () => {
     while (min < max) {
-      const singleDiceRollsD1 = rollSingleDiceMultipleTimesAndSum(count, D1).sum();
-      const singleDiceRollsD2 = rollSingleDiceMultipleTimesAndSum(count, D2).sum();
+      const singleDiceRollsD1 = rollSingleDiceMultipleTimesAndSum(
+        count,
+        D1
+      ).sum();
+      const singleDiceRollsD2 = rollSingleDiceMultipleTimesAndSum(
+        count,
+        D2
+      ).sum();
 
       expect(singleDiceRollsD1).toBeGreaterThanOrEqual(minSideValue * count);
       expect(singleDiceRollsD1).toBeLessThanOrEqual(D1_Sides * count);
@@ -99,9 +109,7 @@ describe("Test functionality and validity of utils methods", () => {
   });
 
   test("Test rollMultipleAndSum function", () => {
-
     while (min < max) {
-
       expect(rollMultipleAndSum(D1, D1).sum()).toBeGreaterThanOrEqual(
         minSideValue * 2
       );

@@ -34,12 +34,10 @@ export class Board {
       let chuteOrLadderSelector = this.randomSelector(0, 2);
       if (chuteOrLadderSelector === 0 && value > 10 && !isSpecialSpace) {
         spaceType = SpaceType.CHUTE;
-        value = "Chute";
         isSpecialSpace = true;
       }
       if (chuteOrLadderSelector === 1 && value < 89 && !isSpecialSpace) {
         spaceType = SpaceType.LADDER;
-        value = "Ladder";
         isSpecialSpace = true;
       }
       isSpecialSpace = false;
@@ -51,10 +49,10 @@ export class Board {
   chuteSpaceConnector() {
     let chutes = this.#Chutes;
     let dummyNode = null;
+    let special = undefined;
 
     for (let i = 0; i < chutes.length; i++) {
-      let special = chutes[i][1];
-      dummyNode = chutes[i][0];
+      [dummyNode, special] = chutes[i];
 
       while (special > 0) {
         dummyNode = dummyNode.previous;
@@ -68,10 +66,10 @@ export class Board {
   ladderSpaceConnector() {
     let ladders = this.#Ladders;
     let dummyNode = null;
+    let special = undefined;
 
     for (let i = 0; i < ladders.length; i++) {
-      let special = ladders[i][1];
-      dummyNode = ladders[i][0];
+      [dummyNode, special] = ladders[i];
 
       while (special > 0) {
         dummyNode = dummyNode.next;

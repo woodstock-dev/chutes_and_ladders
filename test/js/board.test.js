@@ -2,13 +2,12 @@
 
 import { Space, SpaceType } from "../../src/js/model/space";
 import { Avatar, Color } from "../../src/js/model/avatar";
-import { Board } from "../../src/js/model/board";
+import { Board, totalSpaces } from "../../src/js/model/board";
 import { Die } from "../../src/js/model/die";
 
-let board, avatar1, avatar2, cur, max, die, rollValue;
+let board, avatar1, avatar2, cur, die, rollValue;
 
 beforeEach(() => {
-  max = 100;
   board = new Board(100, new Space(SpaceType.START, "Start"));
   avatar1 = new Avatar("Test Car", Color.RED);
   avatar2 = new Avatar("Test Hat", Color.BLACK);
@@ -87,10 +86,17 @@ describe("Test connectivity of spaces within Board", () => {
       cur = cur.next;
     }
     if (cur.type === SpaceType.NORMAL) {
-      expect(avatar1Space === cur.next).toBeTruthy();
-      expect(avatar2Space === cur).toBeTruthy();
-      expect(avatar1Space.occupied === cur.next.occupied).toBeTruthy();
-      expect(avatar2Space.occupied === cur.occupied).toBeTruthy();
+      if (cur.next.type === SpaceType.NORMAL) {
+        expect(avatar1Space === cur.next).toBeTruthy();
+        expect(avatar2Space === cur).toBeTruthy();
+        expect(avatar1Space.occupied === cur.next.occupied).toBeTruthy();
+        expect(avatar2Space.occupied === cur.occupied).toBeTruthy();
+      } else {
+        expect(avatar1Space === cur.next.special).toBeTruthy();
+        expect(
+          avatar1Space.occupied === cur.next.special.occupied
+        ).toBeTruthy();
+      }
     }
   });
 
@@ -102,7 +108,7 @@ describe("Test connectivity of spaces within Board", () => {
       }
       cur = cur.next;
     }
-    expect(avatar1.location === cur.special).toBeTruthy();
+    expect(avatar1.location).toEqual(cur.special);
   });
 
   test("Avatar landing on ladder", () => {
@@ -113,6 +119,6 @@ describe("Test connectivity of spaces within Board", () => {
       }
       cur = cur.next;
     }
-    expect(avatar1.location === cur.special).toBeTruthy();
+    expect(avatar1.location).toEqual(cur.special);
   });
 });

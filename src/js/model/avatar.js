@@ -44,15 +44,17 @@ export class Avatar {
   }
 
   move(numberOfSpaces) {
+    let startLoc = this.#Location;
     let loc = this.#Location;
-    this.location.leave();
+    loc.leave();
     while (numberOfSpaces > 0) {
-      if (loc.next === null) break;
-      else {
+      if (loc.next === null) {
+        break;
+      } else {
         loc = loc.next;
       }
       numberOfSpaces--;
     }
-    loc.land(this);
+    numberOfSpaces === 0 ? loc.land(this) : loc.land(startLoc);
   }
 }

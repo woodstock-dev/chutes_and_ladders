@@ -1,11 +1,11 @@
 // Copyright 2023 Ryan McGuinness
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,12 +13,11 @@
 // limitations under the License.
 
 // Should take a number argument >= 1 and return a number value
-import {SummedRoll} from "./summed_roll";
-
+import { SummedRoll } from "./summed_roll";
 
 export const generateRandomNumber = (upperBound) => {
-  return Math.floor(Math.random() * upperBound) +1
-}
+  return Math.floor(Math.random() * upperBound) + 1;
+};
 
 /**
  *
@@ -29,18 +28,18 @@ export const generateRandomNumber = (upperBound) => {
 /*
 ANYTIME dice IS CALLED, IT REPRESENTS AN INSTANCE OF THE die METHOD. IF THE
 SPREAD OR REST OPERATOR IS USED, THE FUNCTION CAN HAVE MULTIPLE INSTANCES
-OF THE Die CLASS CALLED AND PASSED INTO THE RECEIVING FUNCTION AS AN ARGUMENT
+OF THE Die CLASS CALLED AND PASSED INTO THE RECEIVING FUNCTION AS THE ARGUMENT
 */
 export const rollDice = (...dice) => {
-  return dice.map(shake => shake.roll())
-}
+  return dice.map((shake) => shake.roll());
+};
 
-export const rollSingleDiceMultipleTimes = (count, die, rolls=[]) => {
-  if (count === 0) return
-  rolls.push(die.roll())
-  rollSingleDiceMultipleTimes(count-1, die, rolls)
-  return rolls
-}
+export const rollSingleDiceMultipleTimes = (count, die, rolls = []) => {
+  if (count === 0) return;
+  rolls.push(die.roll());
+  rollSingleDiceMultipleTimes(count - 1, die, rolls);
+  return rolls;
+};
 
 /**
  *
@@ -48,28 +47,24 @@ export const rollSingleDiceMultipleTimes = (count, die, rolls=[]) => {
  * @param dice one or more dice
  * @return number[][] an array of values
  */
-export const rollMultipleDiceMultipleTimes = (totalRolls, dice, rolls=[]) => {
-  if (totalRolls === 0) return
-  rolls.push(rollDice(...dice))
-  rollMultipleDiceMultipleTimes(totalRolls -1, dice, rolls)
-  return rolls
-}
-// let d1 = new Die(6)
-// let d2 = new Die(4)
-// console.log(rollMultipleDiceMultipleTimes(4,[d1, d2]))
+export const rollMultipleDiceMultipleTimes = (totalRolls, dice, rolls = []) => {
+  if (totalRolls === 0) return;
+  rolls.push(rollDice(...dice));
+  rollMultipleDiceMultipleTimes(totalRolls - 1, dice, rolls);
+  return rolls;
+};
 
-export const rollSingleDiceMultipleTimesAndSum = (count, dice, rolls=[]) => {
-  if (count === 0) return
-  rolls.push(dice.roll())
-  rollSingleDiceMultipleTimesAndSum(count-1, dice, rolls)
+export const rollSingleDiceMultipleTimesAndSum = (count, dice, rolls = []) => {
+  if (count === 0) return;
+  rolls.push(dice.roll());
+  rollSingleDiceMultipleTimesAndSum(count - 1, dice, rolls);
   return new SummedRoll(rolls);
-}
+};
 /**
  *
  * @param dice
  * @return SummedRoll
  */
 export const rollMultipleAndSum = (...dice) => {
-  return new SummedRoll(rollDice(...dice))
-}
-
+  return new SummedRoll(rollDice(...dice));
+};

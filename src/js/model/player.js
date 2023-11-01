@@ -41,15 +41,14 @@ export class Player {
   }
 
   get avatar() {
-    return this.#Avatar
+    return this.#Avatar;
   }
 
   set avatar(avatar) {
-    this.#Avatar = avatar
+    this.#Avatar = avatar;
   }
 
   get order() {
-    return this.#Order
+    return this.#Order;
   }
-  // TODO - Fill in the remaining getters
 }
