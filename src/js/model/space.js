@@ -21,7 +21,7 @@ export class SpaceType {
 }
 
 export class Space {
-  #Value = "";
+  #Value = '';
   #Type = SpaceType.NORMAL;
   #Next = null;
   #Special = null;

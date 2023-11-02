@@ -14,7 +14,7 @@ export class Color {
 
 export class Avatar {
   #Location = null;
-  #Name = "";
+  #Name = '';
   #Color = Color.UNDEFINED;
 
   /**
@@ -39,24 +39,37 @@ export class Avatar {
     return this.#Color;
   }
 
-  set location(loc) {
-    this.#Location = loc;
+  set location(location) {
+    this.#Location = location;
+  }
+
+  _moveBack(numberOfSpaces) {
+    let avatarLoc = this.location;
+    while (numberOfSpaces > 0) {
+      if (!avatarLoc.previous) return null;
+      else avatarLoc = avatarLoc.previous;
+      numberOfSpaces--;
+    }
+    return avatarLoc;
+  }
+
+  _moveForward(numberOfSpaces) {
+    let avatarLoc = this.location;
+    while (numberOfSpaces > 0) {
+      if (!avatarLoc.next) return null;
+      else avatarLoc = avatarLoc.next;
+      numberOfSpaces--;
+    }
+    return avatarLoc;
   }
 
   move(numberOfSpaces) {
-    let locBeforeMove = this.#Location;
-    let locAfterMove = this.#Location;
-    while (numberOfSpaces > 0) {
-      if (locAfterMove.next === null) {
-        break;
-      } else {
-        locAfterMove = locAfterMove.next;
-      }
-      numberOfSpaces--;
-    }
-    if (numberOfSpaces === 0) {
+    let locBeforeMove = this.location;
+    const locAfterMove = numberOfSpaces > 0 ? this._moveForward(numberOfSpaces) : this._moveBack(Math.abs(numberOfSpaces));
+
+    if (locAfterMove) {
       locBeforeMove.leave();
-      locAfterMove.land(this)
-    } 
+      locAfterMove.land(this);
+    }
   }
 }

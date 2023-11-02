@@ -58,7 +58,7 @@ export const rollSingleDiceMultipleTimesAndSum = (count, dice, rolls = []) => {
   if (count === 0) return;
   rolls.push(dice.roll());
   rollSingleDiceMultipleTimesAndSum(count - 1, dice, rolls);
-  return new SummedRoll(rolls);
+  return new SummedRoll(rolls).sum();
 };
 /**
  *
@@ -66,5 +66,5 @@ export const rollSingleDiceMultipleTimesAndSum = (count, dice, rolls = []) => {
  * @return SummedRoll
  */
 export const rollMultipleAndSum = (...dice) => {
-  return new SummedRoll(rollDice(...dice));
+  return new SummedRoll(rollDice(...dice)).sum();
 };
