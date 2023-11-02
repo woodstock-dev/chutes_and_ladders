@@ -29,8 +29,7 @@ export class Board {
     let spaceInRow = value % 10;
 
     if (value === 1) return this.#StartSpace;
-    if (row % 2 === 0 && spaceInRow === row) spaceType = SpaceType.CHUTE;
-    if (row % 2 !== 0 && spaceInRow === row) spaceType = SpaceType.LADDER;
+    if (spaceInRow === row) row % 2 === 0 ? (spaceType = SpaceType.CHUTE) : (spaceType = SpaceType.LADDER);
 
     return new Space(spaceType, value);
   }
