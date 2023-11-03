@@ -1,7 +1,7 @@
 // TEST CASES FOR SPACE MODULE
 
-import { Space, SpaceType } from "../../src/js/model/space";
-import { Avatar, Color } from "../../src/js/model/avatar";
+import { Space, SpaceType } from '../../src/js/model/space';
+import { Avatar, Color } from '../../src/js/model/avatar';
 
 // Setup of spaces & avatars
 let s1, Ladder, s3, s4, s5, s6, s7, s8, Chute, s10, avatar1, avatar2, cur;
@@ -40,16 +40,16 @@ beforeEach(() => {
   Chute.previous = s8;
   s10.previous = Chute;
 
-  avatar1 = new Avatar("Test Car", Color.RED);
-  avatar2 = new Avatar("Test Hat", Color.BLACK);
+  avatar1 = new Avatar('Test Car', Color.RED);
+  avatar2 = new Avatar('Test Hat', Color.BLACK);
   s1.land(avatar1);
   s1.land(avatar2);
 
   cur = s1;
 });
 
-describe("Connectivity and functionality of space.js", () => {
-  test("Test for #Next of Spaces", () => {
+describe('Connectivity and functionality of space.js', () => {
+  test('Test for #Next of Spaces', () => {
     while (cur) {
       test = expect(cur).not.toBeNull();
       test = expect(cur).toBeInstanceOf(Space);
@@ -57,24 +57,23 @@ describe("Connectivity and functionality of space.js", () => {
     }
   });
 
-  test("Test for #Type of Spaces", () => {
+  test('Test for #Type of Spaces', () => {
     while (cur) {
       expect(cur.type).not.toBeUndefined();
       cur = cur.next;
     }
   });
 
-  test("Test for #Special of Spaces", () => {
+  test('Test for #Special of Spaces', () => {
     while (cur) {
-      if (cur.type === SpaceType.CHUTE || cur.type === SpaceType.LADDER)
-        expect(cur.special).not.toBeNull();
+      if (cur.type === SpaceType.CHUTE || cur.type === SpaceType.LADDER) expect(cur.special).not.toBeNull();
       cur = cur.next;
     }
   });
 });
 
-describe("Test of move function starting from beginning space and #Players array", () => {
-  test("Test Special Space and Occupied method", () => {
+describe('Test of move function starting from beginning space and #Players array', () => {
+  test('Test Special Space and Occupied method', () => {
     expect(s1.players.length === 2).toBeTruthy();
     expect(s1.occupied).toBeTruthy();
     avatar1.move(1);
@@ -87,7 +86,7 @@ describe("Test of move function starting from beginning space and #Players array
     expect(s6.players.length === 1).toBeTruthy();
     expect(s6.occupied).toBeTruthy();
   });
-  test("Move 2 Spaces, land, leave, occupied and previous", () => {
+  test('Move 2 Spaces, land, leave, occupied and previous', () => {
     expect(s1.players.length === 2).toBeTruthy();
     expect(s1.occupied).toBeTruthy();
     avatar1.move(3);
@@ -101,26 +100,39 @@ describe("Test of move function starting from beginning space and #Players array
     expect(s6.occupied).toBeTruthy();
   });
 
-  test("Test Break statement of move method in Avatar - line 55", () => {
+  test('Test Break statement of move method in Avatar - line 55', () => {
     avatar1.move(20);
+    expect(avatar1.location).toBe(s1);
+
+    avatar1.move(-20);
     expect(avatar1.location).toBe(s1);
   });
 
-  test("Test Previous", () => {
+  test('Test Previous', () => {
     expect(s1.previous).toBeNull();
     expect(s5.previous).toBe(s4);
   });
-  test("Test correct Avatar in player array after move is called", () => {
+  test('Test correct Avatar in player array after move is called', () => {
     avatar1.move(2);
-    expect(s1.players[0].name).toBe("Test Hat");
+    expect(s1.players[0].name).toBe('Test Hat');
   });
 });
-describe("Test of User Defined Input Methods", () => {
-  test("Test Avatar Name and Color / Space Value", () => {
+describe('Test of User Defined Input Methods', () => {
+  test('Test Avatar Name and Color / Space Value', () => {
     expect(avatar1.color).toBe(Color.RED);
     expect(avatar2.color).toBe(Color.BLACK);
-    expect(avatar1.name).toBe("Test Car");
-    expect(avatar2.name).toBe("Test Hat");
-    expect(s1.value).toBe("1");
+    expect(avatar1.name).toBe('Test Car');
+    expect(avatar2.name).toBe('Test Hat');
+    expect(s1.value).toBe('1');
+  });
+
+  test('Backwards movement of avatar', () => {
+    avatar1.move(5);
+    avatar1.move(-2);
+    expect(avatar1.location === s4).toBeTruthy();
+
+    avatar2.move(8);
+    avatar2.move(-1);
+    expect(avatar2.location === s5).toBeTruthy();
   });
 });
