@@ -104,7 +104,7 @@ export class Board {
 
     for (let i = 0; i < ladders.length; i++) {
       [dummyNode, special] = ladders[i];
-      special = this.specialDumpValue(minDistForSpecialSpace, this.totalSpaces - 2 - special);
+      special = this.specialDumpValue(minDistForSpecialSpace, this.totalSpaces - special);
       if (special === undefined) special = minDistForSpecialSpace;
       while (special > 0) {
         dummyNode = dummyNode.next;
