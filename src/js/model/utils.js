@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Should take a number argument >= 1 and return a number value
-import { SummedRoll } from "./summed_roll";
+import { SummedRoll } from './summed_roll.js';
 
 export const generateRandomNumber = (upperBound) => {
   return Math.floor(Math.random() * upperBound) + 1;

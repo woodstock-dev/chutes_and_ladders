@@ -23,5 +23,10 @@
   },
   "dependencies": {
     "quokka": "^0.0.7"
+  },
+  "quokka": {
+    "plugins": [
+      "jsdom-quokka-plugin"
+    ]
   }
 }
