@@ -163,10 +163,3 @@ export class Board {
     return boardDisplay.map((row) => row.join(space)).join(newLine);
   }
 }
-const b = new Board(100, 5, 5, new Space(SpaceType.START, 'Start'));
-let cur = b.startSpace;
-
-while (cur) {
-  if (cur.special) console.log([cur.value, cur.type, cur.special, cur.special]);
-  cur = cur.next;
-}
