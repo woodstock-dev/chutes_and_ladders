@@ -10,7 +10,7 @@ export class Board {
   #LadderCount = 0;
   #Specials = [];
 
-  constructor(totalSpaces, startSpace, chutes, ladders) {
+  constructor(totalSpaces, chutes, ladders, startSpace) {
     this.#TotalSpaces = totalSpaces;
     this.#StartSpace = startSpace;
     this.chutes = chutes;
@@ -27,6 +27,10 @@ export class Board {
   get startSpace() {
     this.boardSetup; // call the board setup to make the board and connect the startspace from the constructor
     return this.#StartSpace;
+  }
+
+  get specials() {
+    return this.#Specials;
   }
 
   // not sure if I should include on utils page or if I should just update the generateRandomNumber method to accept a min and max value
@@ -49,17 +53,21 @@ export class Board {
 
   spaceMaker(value, row) {
     let space = new Space(SpaceType.NORMAL, value);
+    let chuteCount = this.#ChuteCount;
+    let ladderCount = this.#LadderCount;
 
     if (value === 1) return this.#StartSpace; //when loop is over, attach the startSpace which was instanciated with the board, in case you want to make a different space the starting location
-    if (this.uniqueSpecialValues.has(value) && this.#LadderCount < this.ladders) {
+    if (this.uniqueSpecialValues.has(value) && ladderCount < this.ladders) {
       //check if value in the the uniqueSpecialValues set, I decided on this for 0(1) lookup and sets take care of the uniqueness requirement
-      if (row < 10 && this.#ChuteCount === this.#LadderCount) {
+      if (row < 10 && chuteCount === ladderCount) {
         // Using the count of chutes and ladders, i alternate between the 2 to assign the types, values
         space = new Space(SpaceType.CHUTE, value);
-        this.#ChuteCount++; //starting at the instanciated number of chutes and ladders, i decrement each and keep track of the equality of the numbers to decide which is chute or ladder
+        chuteCount++; //starting at the instanciated number of chutes and ladders, i decrement each and keep track of the equality of the numbers to decide which is chute or ladder
+        this.#ChuteCount = chuteCount;
       } else {
         space = new Space(SpaceType.LADDER, value);
-        this.#LadderCount++;
+        ladderCount++;
+        this.#LadderCount = ladderCount;
       }
     }
     return space;
@@ -67,7 +75,7 @@ export class Board {
 
   //checks the space value for the special space against the values in the set and if the value is not in the set, it assigns to special of cooresponding chute or ladder, then adds the value to the set, if the number is in the set, it runs the random function again
   specialDumpValue(min, max) {
-    if (this.uniqueSpecialValuesDump.size === this.uniqueSpecialValues.size) throw new Error('Find better way to randomize'); //base case to prevent error only
+    if (this.uniqueSpecialValuesDump.size > this.uniqueSpecialValues.size) throw new Error('Find better way to randomize'); //base case to prevent error only
 
     let dumpValue = this.randomRangeSelector(min, max);
     if (this.uniqueSpecialValues.has(this.uniqueSpecialValuesDump)) this.specialDumpValue(min, max);
@@ -124,7 +132,7 @@ export class Board {
       space = space.previous;
       i % 10 === 0 ? row++ : undefined;
 
-      if (space.type === SpaceType.CHUTE || space.type === SpaceType.LADDER) this.#Specials.push([space, i]);
+      if (space.type === SpaceType.CHUTE || space.type === SpaceType.LADDER) this.specials.push([space, i]);
     }
     this.specialsConnector(); //connects both chutes and ladders to special space
   }
@@ -154,4 +162,11 @@ export class Board {
 
     return boardDisplay.map((row) => row.join(space)).join(newLine);
   }
+}
+const b = new Board(100, 5, 5, new Space(SpaceType.START, 'Start'));
+let cur = b.startSpace;
+
+while (cur) {
+  if (cur.special) console.log([cur.value, cur.type, cur.special, cur.special]);
+  cur = cur.next;
 }

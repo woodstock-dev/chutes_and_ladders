@@ -8,7 +8,7 @@ import { Die } from '../../src/js/model/die';
 let board, avatar1, avatar2, cur, die, rollValue;
 
 beforeEach(() => {
-  board = new Board(100, new Space(SpaceType.START, 'Start'), 5, 5);
+  board = new Board(100, 5, 5, new Space(SpaceType.START, 'Start'));
   avatar1 = new Avatar('Test Car', Color.RED);
   avatar2 = new Avatar('Test Hat', Color.BLACK);
   cur = board.startSpace;
