@@ -1,3 +1,4 @@
+import { Avatar, Color } from './avatar.js';
 import { Space, SpaceType } from './space.js';
 
 //If there is a setting I need to change in VSCode or Prettier, please advise, I do not like how the comments formatted in between some of the code
@@ -7,8 +8,7 @@ export class Board {
   #StartSpace = null;
   #ChuteCount = 0;
   #LadderCount = 0;
-  #Chutes = [];
-  #Ladders = [];
+  #Specials = [];
 
   constructor(totalSpaces, startSpace, chutes, ladders) {
     this.#TotalSpaces = totalSpaces;
@@ -17,7 +17,7 @@ export class Board {
     this.ladders = ladders;
     this.uniqueSpecialValues = new Set(); // sets to accept only unique values for random generated numbers
     this.uniqueSpecialValuesDump = new Set(); // this is so we do not add extra special space indexes when we connect them
-    this.minDistForSpecialSpace = Math.sqrt(totalSpaces); //for square board the min distance for a special space is the sqrt of the total spaces
+    this.minDistForSpecialSpace = Math.sqrt(totalSpaces); //for square board: the min distance for a special space && row length is the sqrt of the total spaces
   }
 
   get totalSpaces() {
@@ -76,44 +76,39 @@ export class Board {
       return dumpValue;
     }
   }
-
-  chuteSpaceConnector() {
-    const minDistForSpecialSpace = this.minDistForSpecialSpace;
-    // These next 2 functions take the chutes and ladders special space idx and connects them with the special dump value idx
-    let chutes = this.#Chutes;
+  //loops through specials array generated in the loop of board setup and assigns the special property of a space to the return value of the connector functions
+  specialsConnector() {
+    let specials = this.#Specials;
     let dummyNode = null;
     let special = undefined;
 
-    for (let i = 0; i < chutes.length; i++) {
-      [dummyNode, special] = chutes[i];
-      special = this.specialDumpValue(minDistForSpecialSpace, special - 1);
-      if (special === undefined) special = minDistForSpecialSpace;
-      while (special > 0) {
-        dummyNode = dummyNode.previous;
-        special--;
-      }
-      dummyNode.type === SpaceType.NORMAL ? (chutes[i][0].special = dummyNode) : (chutes[i][0].special = dummyNode.previous); //extra check to make sure the dumpSpace for special is a normal space, if not, move back 1
+    for (let i = 0; i < specials.length; i++) {
+      [dummyNode, special] = specials[i];
+      dummyNode.type === SpaceType.CHUTE ? (dummyNode.special = this._connectChute(dummyNode, special)) : (dummyNode.special = this._connectLadder(dummyNode, special));
     }
   }
-
-  ladderSpaceConnector() {
+  //helper functions are to move traverse the special property either, previous or next, depending on what is spacetype of the space
+  _connectChute(dummyNode, special) {
     const minDistForSpecialSpace = this.minDistForSpecialSpace;
-    let ladders = this.#Ladders;
-    let dummyNode = null;
-    let special = undefined;
-
-    for (let i = 0; i < ladders.length; i++) {
-      [dummyNode, special] = ladders[i];
-      special = this.specialDumpValue(minDistForSpecialSpace, this.totalSpaces - 2 - special);
-      if (special === undefined) special = minDistForSpecialSpace;
-      while (special > 0) {
-        dummyNode = dummyNode.next;
-        special--;
-      }
-      dummyNode.type === SpaceType.NORMAL ? (ladders[i][0].special = dummyNode) : (ladders[i][0].special = dummyNode.next); //extra check to make sure the dumpSpace for special is normal, if not, move up 1
+    let distanceToTraverse = this.specialDumpValue(minDistForSpecialSpace, special - 2);
+    distanceToTraverse === undefined ? minDistForSpecialSpace : undefined; // check to make sure the distanceToTraverse is not undefined, if so, set min distance to 10 spaces or 1 row
+    while (distanceToTraverse > 0) {
+      dummyNode = dummyNode.previous;
+      distanceToTraverse--;
     }
+    return dummyNode.type === SpaceType.NORMAL ? dummyNode : dummyNode.previous; //extra check to make sure the dumpSpace for special is a normal space, if not, move back 1
   }
 
+  _connectLadder(dummyNode, special) {
+    const minDistForSpecialSpace = this.minDistForSpecialSpace;
+    let distanceToTraverse = this.specialDumpValue(minDistForSpecialSpace, this.totalSpaces - 2 - special);
+    distanceToTraverse === undefined ? minDistForSpecialSpace : undefined;
+    while (distanceToTraverse > 0) {
+      dummyNode = dummyNode.next;
+      distanceToTraverse--;
+    }
+    return dummyNode.type === SpaceType.NORMAL ? dummyNode : dummyNode.next; //extra check to make sure the dumpSpace for special is a normal space, if not, move back 1
+  }
   get boardSetup() {
     //builds the board from top down, generates special values
     const minDistForSpecialSpace = this.minDistForSpecialSpace;
@@ -129,23 +124,16 @@ export class Board {
       space = space.previous;
       i % 10 === 0 ? row++ : undefined;
 
-      if (space.type === SpaceType.CHUTE) {
-        //check for chute and ladder type, if so, push a "tuple" with the space and the idx to an array
-        this.#Chutes.push([space, i]);
-      }
-      if (space.type === SpaceType.LADDER) {
-        this.#Ladders.push([space, i]);
-      }
+      if (space.type === SpaceType.CHUTE || space.type === SpaceType.LADDER) this.#Specials.push([space, i]);
     }
-    this.chuteSpaceConnector(); // execute the connections of the special spaces
-    this.ladderSpaceConnector();
+    this.specialsConnector(); //connects both chutes and ladders to special space
   }
 
   //This will work for any square number board
   //Does not display current gameplay. If that is what is preferred, please advise and I will work on it.
   get displaySpaces() {
     let totalSpaces = this.#TotalSpaces;
-    const rowTotal = Math.sqrt(totalSpaces);
+    const rowTotal = this.minDistForSpecialSpace;
     let boardDisplay = [];
     let space = ' ';
     let newLine = '\n';
