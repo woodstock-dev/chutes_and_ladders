@@ -31,35 +31,47 @@ export class Board {
     return this.#Specials;
   }
 
+  get chuteCount() {
+    return this.#ChuteCount;
+  }
+
+  set chuteCount(count) {
+    this.#ChuteCount = count;
+  }
+
+  get ladderCount() {
+    return this.#LadderCount;
+  }
+
+  set ladderCount(count) {
+    this.#LadderCount = count;
+  }
+
   // not sure if I should include on utils page or if I should just update the generateRandomNumber method to accept a min and max value
   randomRangeSelector(min, max) {
     return Math.floor(Math.random() * (max - min) + min); // I want 0 to be included in my range if need be
   }
 
   // makes the special space indexes and stores them in the set to guarantee the values are unqiue
-  specialValuesMaker(min, max) {
+  specialValuesMaker(min = 83, max = this.#TotalSpaces) {
     if (this.uniqueSpecialValues.size === this.chutes + this.ladders) return;
-    let specialValues = this.randomRangeSelector(min, max);
+    const specialValues = this.randomRangeSelector(min, max);
     if (this.uniqueSpecialValues.add(specialValues)) this.specialValuesMaker(min - 9, max - 9);
   }
 
-  spaceMaker(value, row) {
-    let space = new Space(SpaceType.NORMAL, value);
-    let chuteCount = this.#ChuteCount;
-    let ladderCount = this.#LadderCount;
+  spaceMaker(indexOfSpace, row) {
+    let space = new Space(SpaceType.NORMAL, indexOfSpace);
 
-    if (value === 1) return this.#StartSpace; //when loop is over, attach the startSpace which was instanciated with the board, in case you want to make a different space the starting location
-    if (this.uniqueSpecialValues.has(value) && ladderCount < this.ladders) {
-      //check if value in the the uniqueSpecialValues set, I decided on this for 0(1) lookup and sets take care of the uniqueness requirement
-      if (row < 10 && chuteCount === ladderCount) {
+    if (indexOfSpace === 1) return this.#StartSpace; //when loop is over, attach the startSpace which was instanciated with the board, in case you want to make a different space the starting location
+    if (this.uniqueSpecialValues.has(indexOfSpace) && this.ladderCount < this.ladders) {
+      //check if indexOfSpace in the the uniqueSpecialValues set, I decided on this for 0(1) lookup and sets take care of the uniqueness requirement
+      if (row < 10 && this.chuteCount === this.ladderCount) {
         // Using the count of chutes and ladders, i alternate between the 2 to assign the types, values
-        space = new Space(SpaceType.CHUTE, value);
-        chuteCount++; //starting at the instanciated number of chutes and ladders, i decrement each and keep track of the equality of the numbers to decide which is chute or ladder
-        this.#ChuteCount = chuteCount;
+        space = new Space(SpaceType.CHUTE, indexOfSpace);
+        this.chuteCount++; //starting at the instanciated number of chutes and ladders, i decrement each and keep track of the equality of the numbers to decide which is chute or ladder
       } else {
-        space = new Space(SpaceType.LADDER, value);
-        ladderCount++;
-        this.#LadderCount = ladderCount;
+        space = new Space(SpaceType.LADDER, indexOfSpace);
+        this.ladderCount++;
       }
     }
     return space;
@@ -69,29 +81,25 @@ export class Board {
   specialDumpValue(min, max) {
     if (this.uniqueSpecialValuesDump.size > this.uniqueSpecialValues.size) throw new Error('Find better way to randomize'); //base case to prevent error only
 
-    let dumpValue = this.randomRangeSelector(min, max);
-    if (this.uniqueSpecialValues.has(this.uniqueSpecialValuesDump)) this.specialDumpValue(min, max);
-    else {
-      this.uniqueSpecialValuesDump.add(dumpValue);
-      return dumpValue;
-    }
+    const dumpValue = this.randomRangeSelector(min, max);
+    this.uniqueSpecialValues.has(this.uniqueSpecialValuesDump) ? this.specialDumpValue(min, max) : this.uniqueSpecialValuesDump.add(dumpValue);
+    return dumpValue;
   }
   //loops through specials array generated in the loop of board setup and assigns the special property of a space to the return value of the connector functions
   specialsConnector() {
     let specials = this.#Specials;
     let dummyNode = null;
-    let special = undefined;
+    let indexOfSpace = undefined;
 
     for (let i = 0; i < specials.length; i++) {
-      [dummyNode, special] = specials[i];
-      dummyNode.type === SpaceType.CHUTE ? (dummyNode.special = this._connectChute(dummyNode, special)) : (dummyNode.special = this._connectLadder(dummyNode, special));
+      [dummyNode, indexOfSpace] = specials[i];
+      dummyNode.type === SpaceType.CHUTE ? (dummyNode.special = this._connectChute(dummyNode, indexOfSpace)) : (dummyNode.special = this._connectLadder(dummyNode, indexOfSpace));
     }
   }
-  //helper functions are to move traverse the special property either, previous or next, depending on what is spacetype of the space
-  _connectChute(dummyNode, special) {
-    const minDistForSpecialSpace = this.minDistForSpecialSpace;
-    let distanceToTraverse = this.specialDumpValue(minDistForSpecialSpace, special - 2);
-    distanceToTraverse === undefined ? minDistForSpecialSpace : undefined; // check to make sure the distanceToTraverse is not undefined, if so, set min distance to 10 spaces or 1 row
+  //helper functions are to traverse the special property either, previous or next, depending on what is spacetype of the space
+  _connectChute(dummyNode, indexOfSpace) {
+    let distanceToTraverse = this.specialDumpValue(this.minDistForSpecialSpace, indexOfSpace - 2) ?? this.minDistForSpecialSpace;
+    // check to make sure the distanceToTraverse is not undefined, if so, set min distance to 10 spaces or 1 row
     while (distanceToTraverse > 0) {
       dummyNode = dummyNode.previous;
       distanceToTraverse--;
@@ -99,34 +107,29 @@ export class Board {
     return dummyNode.type === SpaceType.NORMAL ? dummyNode : dummyNode.previous; //extra check to make sure the dumpSpace for special is a normal space, if not, move back 1
   }
 
-  _connectLadder(dummyNode, special) {
-    const minDistForSpecialSpace = this.minDistForSpecialSpace;
-    let distanceToTraverse = this.specialDumpValue(minDistForSpecialSpace, this.totalSpaces - 2 - special);
-    distanceToTraverse === undefined ? minDistForSpecialSpace : undefined;
+  _connectLadder(dummyNode, indexOfSpace) {
+    let distanceToTraverse = this.specialDumpValue(this.minDistForSpecialSpace, this.totalSpaces - 2 - indexOfSpace) ?? this.minDistForSpecialSpace;
     while (distanceToTraverse > 0) {
       dummyNode = dummyNode.next;
       distanceToTraverse--;
     }
     return dummyNode.type === SpaceType.NORMAL ? dummyNode : dummyNode.next; //extra check to make sure the dumpSpace for special is a normal space, if not, move back 1
   }
+
   boardSetup() {
     //builds the board from top down, generates special values
-    const minDistForSpecialSpace = this.minDistForSpecialSpace;
-    const max = this.#TotalSpaces;
-    const min = 83;
-    this.specialValuesMaker(max, min); //generate special indexes
-    let totalSpaces = this.#TotalSpaces;
+    this.specialValuesMaker(); //generate special indexes
     let space = new Space(SpaceType.FINISH, 'Finish');
     let row = 1;
 
-    for (let i = totalSpaces - 1; i > 0; i--) {
+    for (let indexOfSpace = this.#TotalSpaces - 1; indexOfSpace > 0; indexOfSpace--) {
       //build next, previous and define the rows
-      space.previous = this.spaceMaker(i, row);
+      space.previous = this.spaceMaker(indexOfSpace, row);
       space.previous.next = space;
       space = space.previous;
-      i % 10 === 0 ? row++ : undefined;
+      indexOfSpace % 10 === 0 ? row++ : row;
 
-      if (space.type === SpaceType.CHUTE || space.type === SpaceType.LADDER) this.specials.push([space, i]);
+      if (space.type === SpaceType.CHUTE || space.type === SpaceType.LADDER) this.specials.push([space, indexOfSpace]);
     }
     this.specialsConnector(); //connects both chutes and ladders to special space
   }
@@ -157,5 +160,3 @@ export class Board {
     return boardDisplay.map((row) => row.join(space)).join(newLine);
   }
 }
-let b = new Board(100, 5, 5, new Space(SpaceType.START, 'Start'));
-b.boardSetup();
