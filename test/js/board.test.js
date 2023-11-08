@@ -11,6 +11,7 @@ beforeEach(() => {
   board = new Board(100, 5, 5, new Space(SpaceType.START, 'Start'));
   avatar1 = new Avatar('Test Car', Color.RED);
   avatar2 = new Avatar('Test Hat', Color.BLACK);
+  board.boardSetup();
   cur = board.startSpace;
 
   cur.land(avatar1);

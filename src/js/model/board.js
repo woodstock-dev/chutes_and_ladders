@@ -1,4 +1,3 @@
-import { Avatar, Color } from './avatar.js';
 import { Space, SpaceType } from './space.js';
 
 //If there is a setting I need to change in VSCode or Prettier, please advise, I do not like how the comments formatted in between some of the code
@@ -25,7 +24,6 @@ export class Board {
   }
 
   get startSpace() {
-    this.boardSetup; // call the board setup to make the board and connect the startspace from the constructor
     return this.#StartSpace;
   }
 
@@ -39,16 +37,10 @@ export class Board {
   }
 
   // makes the special space indexes and stores them in the set to guarantee the values are unqiue
-  specialValuesMaker() {
-    let max = this.#TotalSpaces;
-    let min = 83;
-    while (this.uniqueSpecialValues.size < 10) {
-      let specialValues = this.randomRangeSelector(min, max);
-      if (this.uniqueSpecialValues.add(specialValues)) {
-        max -= 9; // i decrement the min and max by the minimum value possible to ensure a good spread of values for the special spaces because Math.random() FUCKING SUCKS!!!!
-        min -= 9;
-      }
-    }
+  specialValuesMaker(min, max) {
+    if (this.uniqueSpecialValues.size === this.chutes + this.ladders) return;
+    let specialValues = this.randomRangeSelector(min, max);
+    if (this.uniqueSpecialValues.add(specialValues)) this.specialValuesMaker(min - 9, max - 9);
   }
 
   spaceMaker(value, row) {
@@ -117,10 +109,12 @@ export class Board {
     }
     return dummyNode.type === SpaceType.NORMAL ? dummyNode : dummyNode.next; //extra check to make sure the dumpSpace for special is a normal space, if not, move back 1
   }
-  get boardSetup() {
+  boardSetup() {
     //builds the board from top down, generates special values
     const minDistForSpecialSpace = this.minDistForSpecialSpace;
-    this.specialValuesMaker(); //generate special indexes
+    const max = this.#TotalSpaces;
+    const min = 83;
+    this.specialValuesMaker(max, min); //generate special indexes
     let totalSpaces = this.#TotalSpaces;
     let space = new Space(SpaceType.FINISH, 'Finish');
     let row = 1;
@@ -163,3 +157,5 @@ export class Board {
     return boardDisplay.map((row) => row.join(space)).join(newLine);
   }
 }
+let b = new Board(100, 5, 5, new Space(SpaceType.START, 'Start'));
+b.boardSetup();

@@ -19,12 +19,16 @@
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "prettier": "3.0.3",
-    "typescript": "^5.2.2",
-    "quokka": "^0.0.7"
+    "quokka": "^0.0.7",
+    "typescript": "^5.2.2"
   },
   "quokka": {
     "plugins": [
       "jsdom-quokka-plugin"
     ]
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
