@@ -1,5 +1,4 @@
 import { Space, SpaceType } from './space.js';
-import { randomRangeSelector } from './utils.js';
 
 //If there is a setting I need to change in VSCode or Prettier, please advise, I do not like how the comments formatted in between some of the code
 
@@ -10,7 +9,6 @@ export class Board {
   #LadderCount = 0;
   #Specials = [];
   #Board = [];
-  #MAX_SPECIAL_DIST = 40;
 
   constructor(totalSpaces, chutes, ladders, startSpace) {
     this.#TotalSpaces = totalSpaces;
@@ -19,21 +17,11 @@ export class Board {
     this.ladders = ladders;
     this.uniqueSpecialValues = new Set(); // sets to accept only unique values for random generated numbers
     this.uniqueSpecialValuesDump = new Set(); // this is so we do not add extra special space indexes when we connect them
-    this.rowValue = Math.sqrt(totalSpaces) % 1 === 0 ? Math.sqrt(totalSpaces) : Math.ceil(Math.sqrt(totalSpaces)); //length of each row of square board, if totalSpaces is not a square number, we round to the closest number and add 1
-    this.rangeReducer = this.rowValue - 1; // number to reduce my range for special spaces
-    this.minDistForSpecialSpace = this.rangeReducer; // i dont know if having the same value in 2 different variables is common practice, but it helped me understand what is happening in my functions
+    this.minDistForSpecialSpace = Math.sqrt(totalSpaces); //for square board: the min distance for a special space && row length is the sqrt of the total spaces
   }
 
   get totalSpaces() {
     return this.#TotalSpaces;
-  }
-
-  get board() {
-    return this.#Board;
-  }
-
-  set board(space) {
-    this.#Board = space;
   }
 
   get startSpace() {
@@ -60,15 +48,24 @@ export class Board {
     this.#LadderCount = count;
   }
 
-  minValue() {
-    return this.rangeReducer ** 2 + 2;
+  get board() {
+    return this.#Board;
+  }
+
+  set board(space) {
+    this.Board = space;
+  }
+
+  // not sure if I should include on utils page or if I should just update the generateRandomNumber method to accept a min and max value
+  randomRangeSelector(min, max) {
+    return Math.floor(Math.random() * (max - min) + min); // I want 0 to be included in my range if need be
   }
 
   // makes the special space indexes and stores them in the set to guarantee the values are unqiue
-  specialValuesMaker(min = this.minValue(), max = this.totalSpaces) {
+  specialValuesMaker(min = 83, max = this.#TotalSpaces) {
     if (this.uniqueSpecialValues.size === this.chutes + this.ladders) return;
-    const specialValues = randomRangeSelector(min, max);
-    if (this.uniqueSpecialValues.add(specialValues)) this.specialValuesMaker(min - this.rangeReducer, max - this.rangeReducer);
+    const specialValues = this.randomRangeSelector(min, max);
+    if (this.uniqueSpecialValues.add(specialValues)) this.specialValuesMaker(min - 9, max - 9);
   }
 
   spaceMaker(indexOfSpace, row) {
@@ -77,7 +74,7 @@ export class Board {
     if (indexOfSpace === 1) return this.#StartSpace; //when loop is over, attach the startSpace which was instanciated with the board, in case you want to make a different space the starting location
     if (this.uniqueSpecialValues.has(indexOfSpace) && this.ladderCount < this.ladders) {
       //check if indexOfSpace in the the uniqueSpecialValues set, I decided on this for 0(1) lookup and sets take care of the uniqueness requirement
-      if (row < this.rowValue && this.chuteCount === this.ladderCount) {
+      if (row < 10 && this.chuteCount === this.ladderCount) {
         // Using the count of chutes and ladders, i alternate between the 2 to assign the types, values
         space = new Space(SpaceType.CHUTE, indexOfSpace);
         this.chuteCount++; //starting at the instanciated number of chutes and ladders, i decrement each and keep track of the equality of the numbers to decide which is chute or ladder
@@ -93,7 +90,7 @@ export class Board {
   specialDumpValue(min, max) {
     if (this.uniqueSpecialValuesDump.size > this.uniqueSpecialValues.size) throw new Error('Find better way to randomize'); //base case to prevent error only
 
-    const dumpValue = randomRangeSelector(min, max);
+    const dumpValue = this.randomRangeSelector(min, max);
     this.uniqueSpecialValues.has(this.uniqueSpecialValuesDump) ? this.specialDumpValue(min, max) : this.uniqueSpecialValuesDump.add(dumpValue);
     return dumpValue;
   }
@@ -110,8 +107,7 @@ export class Board {
   }
   //helper functions are to traverse the special property either, previous or next, depending on what is spacetype of the space
   _connectChute(dummyNode, indexOfSpace) {
-    let maxValForRand = indexOfSpace > this.#MAX_SPECIAL_DIST ? this.#MAX_SPECIAL_DIST : indexOfSpace;
-    let distanceToTraverse = this.specialDumpValue(this.minDistForSpecialSpace, maxValForRand) ?? this.minDistForSpecialSpace;
+    let distanceToTraverse = this.specialDumpValue(this.minDistForSpecialSpace, indexOfSpace - 2) ?? this.minDistForSpecialSpace;
     // check to make sure the distanceToTraverse is not undefined, if so, set min distance to 10 spaces or 1 row
     while (distanceToTraverse > 0) {
       dummyNode = dummyNode.previous;
@@ -121,8 +117,7 @@ export class Board {
   }
 
   _connectLadder(dummyNode, indexOfSpace) {
-    let maxValForRand = this.totalSpaces - indexOfSpace > this.#MAX_SPECIAL_DIST ? this.#MAX_SPECIAL_DIST : this.totalSpaces - indexOfSpace;
-    let distanceToTraverse = this.specialDumpValue(this.minDistForSpecialSpace, maxValForRand) ?? this.minDistForSpecialSpace;
+    let distanceToTraverse = this.specialDumpValue(this.minDistForSpecialSpace, this.totalSpaces - 2 - indexOfSpace) ?? this.minDistForSpecialSpace;
     while (distanceToTraverse > 0) {
       dummyNode = dummyNode.next;
       distanceToTraverse--;
@@ -137,22 +132,23 @@ export class Board {
     let row = 1;
     this.board.push(space);
 
-    for (let indexOfSpace = this.totalSpaces - 1; indexOfSpace > 0; indexOfSpace--) {
+    for (let indexOfSpace = this.#TotalSpaces - 1; indexOfSpace > 0; indexOfSpace--) {
       //build next, previous and define the rows
       space.previous = this.spaceMaker(indexOfSpace, row);
       space.previous.next = space;
       space = space.previous;
-      indexOfSpace % this.rowValue === 0 ? row++ : row;
+      if (indexOfSpace % 10 === 0) row++;
 
       if (space.type === SpaceType.CHUTE || space.type === SpaceType.LADDER) this.specials.push([space, indexOfSpace]);
       this.board.push(space);
     }
     this.specialsConnector(); //connects both chutes and ladders to special space
+    return this.board;
   }
 
   //This will work for any square number board
   //Does not display current gameplay. If that is what is preferred, please advise and I will work on it.
-  get displaySpaces() {
+  displaySpaces() {
     this.boardSetup();
     let boardDisplay = [];
     let rowCount = 0;
@@ -161,15 +157,15 @@ export class Board {
     let row = [];
     for (let i = 0; i < this.totalSpaces; i++) {
       space = this.board[i];
-      row.push(space.value);
-      if (row.length === this.rowValue) {
+      row.push(space);
+      if (row.length === 10) {
         row = rowCount % 2 !== 0 ? row : row.reverse();
         boardDisplay.push(row);
         row = [];
       }
-      if (i % this.rowValue === 0) rowCount++;
+      if (i % 10 === 0) rowCount++;
     }
 
-    return boardDisplay.map((row) => row.join(' '));
+    return boardDisplay;
   }
 }

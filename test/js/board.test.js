@@ -1,9 +1,9 @@
 // TEST for Board.js
 
-import { Space, SpaceType } from '../../src/js/model/space';
-import { Avatar, Color } from '../../src/js/model/avatar';
-import { Board } from '../../src/js/model/board';
-import { Die } from '../../src/js/model/die';
+import { Space, SpaceType } from '../../src/js/model/space.js';
+import { Avatar, Color } from '../../src/js/model/avatar.js';
+import { Board } from '../../src/js/model/board.js';
+import { Die } from '../../src/js/model/die.js';
 
 let board, avatar1, avatar2, cur, die, rollValue;
 
