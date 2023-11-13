@@ -8,10 +8,10 @@ let game, avatar1, avatar2, cur, die, rollValue;
 
 beforeEach(() => {
   game = new ChutesAndLadders(10, 5, 5);
-
+  game.makeGameBoard();
   avatar1 = new Avatar('Test Car', Color.RED);
   avatar2 = new Avatar('Test Hat', Color.BLACK);
-  cur = game.makeGameBoard();
+  cur = game.startSpace;
 
   cur.land(avatar1);
   cur.land(avatar2);

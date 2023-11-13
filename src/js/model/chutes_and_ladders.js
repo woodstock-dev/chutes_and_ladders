@@ -3,6 +3,12 @@ import { Space, SpaceType } from './space.js';
 import { RangeSelector } from './range.js';
 
 export class ChutesAndLadders {
+  /**
+   *
+   * @param {*} rows number of spaces in a row
+   * @param {*} chutes number of chutes
+   * @param {*} ladders number of ladders
+   */
   constructor(rows, chutes, ladders) {
     this.TOTAL_SPACES = 100;
     this.ROWS = rows;
@@ -14,14 +20,16 @@ export class ChutesAndLadders {
     this.chuteCount = 0;
     this.ladderCount = 0;
     this.specials = [];
+    this.startSpace = null;
   }
 
   makeGameBoard() {
     this.specialValuesMaker();
     const board = new Board(this.TOTAL_SPACES, this.ROWS, this.spaceMaker);
-    const game = board.boardSetup();
+    const startSpace = board.boardSetup();
     this.connectSpecials(this.specials);
-    return game;
+    this.startSpace = startSpace;
+    return board;
   }
 
   spaceMaker = (indexOfSpace) => {
@@ -112,13 +120,38 @@ export class ChutesAndLadders {
   rowFinder(indexOfSpace) {
     return Math.floor(indexOfSpace / this.ROWS);
   }
+
+  displayGameBoard() {
+    let space = this.startSpace;
+    let gameBoard = [];
+    let row = [];
+    let indexOfSpace = 1;
+    let spaceSeperator = ' ';
+
+    while (space) {
+      let rowCount = this.rowFinder(indexOfSpace);
+      if (space.type === SpaceType.CHUTE) row.push('C ' + spaceSeperator);
+      else if (space.type === SpaceType.LADDER) row.push('L ' + spaceSeperator);
+      else row.push(space.value + spaceSeperator);
+      if (row.length === this.ROWS) {
+        row = rowCount % 2 !== 0 ? row : row.reverse();
+        gameBoard.push(row);
+        row = [];
+      }
+      indexOfSpace++;
+      space = space.next;
+    }
+    return gameBoard.map((row) => row.join(' ')).reverse();
+  }
 }
 
 // This is the way to initiate a board
 
 //10 is spaces per row, 5 chutes, 5 ladders, 100 total spaces is a constant declared in the constructor
 const chutesAndLadders = new ChutesAndLadders(10, 5, 5);
-//call to makeGameBoard() returns the startspace for the game, I did this just for my ability to test while making this
-let game = chutesAndLadders.makeGameBoard();
-
-console.log(game);
+//call to makeGameBoard() returns the board constructed in the Board class and provides a property of startSpace which is the first space of gameplay
+chutesAndLadders.makeGameBoard();
+// game is assigned to the displaySpaces method of the ChutesAndLadders game class. 'C' represents chutes and 'L' represents ladders
+const game = chutesAndLadders.displayGameBoard();
+// I left this in so anyone could see my gameboard easily
+console.log(game.join('\n    '));
