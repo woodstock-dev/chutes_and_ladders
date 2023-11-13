@@ -19,10 +19,6 @@ export const generateRandomNumber = (upperBound) => {
   return Math.floor(Math.random() * upperBound) + 1;
 };
 
-export const randomRangeSelector = (min, max) => {
-  return Math.floor(Math.random() * (max - min) + min);
-};
-
 /**
  *
  * @param dice the dice to roll

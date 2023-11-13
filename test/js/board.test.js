@@ -1,18 +1,17 @@
 // TEST for Board.js
-
+import { ChutesAndLadders } from '../../src/js/model/chutes_and_ladders.js';
 import { Space, SpaceType } from '../../src/js/model/space.js';
 import { Avatar, Color } from '../../src/js/model/avatar.js';
-import { Board } from '../../src/js/model/board.js';
 import { Die } from '../../src/js/model/die.js';
 
-let board, avatar1, avatar2, cur, die, rollValue;
+let game, avatar1, avatar2, cur, die, rollValue;
 
 beforeEach(() => {
-  board = new Board(100, 5, 5, new Space(SpaceType.START, 'Start'));
+  game = new ChutesAndLadders(10, 5, 5);
+
   avatar1 = new Avatar('Test Car', Color.RED);
   avatar2 = new Avatar('Test Hat', Color.BLACK);
-  board.boardSetup();
-  cur = board.startSpace;
+  cur = game.makeGameBoard();
 
   cur.land(avatar1);
   cur.land(avatar2);
@@ -36,7 +35,7 @@ describe('Test connectivity of spaces within Board', () => {
   });
 
   test('Test totalSpaces of Board', () => {
-    expect(board.totalSpaces).toEqual(expect.any(Number));
+    expect(game.TOTAL_SPACES).toEqual(expect.any(Number));
   });
 
   test('SpaceType Start', () => {
