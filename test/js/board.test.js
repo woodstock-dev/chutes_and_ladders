@@ -1,123 +1,31 @@
-// TEST for Board.js
-import { ChutesAndLadders } from '../../src/js/model/chutes_and_ladders.js';
-import { Space, SpaceType } from '../../src/js/model/space.js';
-import { Avatar, Color } from '../../src/js/model/avatar.js';
-import { Die } from '../../src/js/model/die.js';
+import { Board } from '../../src/js/model/board';
+import { Space, SpaceType } from '../../src/js/model/space';
 
-let game, avatar1, avatar2, cur, die, rollValue;
+const spaceMaker = () => {
+  return new Space(SpaceType.NORMAL, '1');
+};
+
+let space, board;
 
 beforeEach(() => {
-  game = new ChutesAndLadders(10, 5, 5);
-  game.makeGameBoard();
-  avatar1 = new Avatar('Test Car', Color.RED);
-  avatar2 = new Avatar('Test Hat', Color.BLACK);
-  cur = game.startSpace;
-
-  cur.land(avatar1);
-  cur.land(avatar2);
-
-  die = new Die(8);
-  rollValue = die.roll();
+  board = new Board(100, 10, spaceMaker);
+  space = board.boardSetup();
 });
 
-describe('Test connectivity of spaces within Board', () => {
-  test('Test Next method of all Spaces', () => {
-    while (cur) {
-      expect(cur).not.toBeNull();
-      expect(cur).toBeInstanceOf(Space);
-      cur = cur.next;
+describe('Test connection of spaces within the boardSetup method', () => {
+  test('test traversing entire list', () => {
+    while (space) {
+      expect(space).not.toBeNull();
+      expect(space).toBeInstanceOf(Space);
+      space = space.next;
     }
   });
 
-  test('Test Previous method', () => {
-    expect(cur.previous).toBeNull();
-    expect(cur.next.previous.type).toBe(SpaceType.START);
-  });
-
-  test('Test totalSpaces of Board', () => {
-    expect(game.TOTAL_SPACES).toEqual(expect.any(Number));
-  });
-
-  test('SpaceType Start', () => {
-    expect(cur.type).toBe(SpaceType.START);
-  });
-
-  test('SpaceType Finish', () => {
-    while (cur.next) {
-      cur = cur.next;
-    }
-    expect(cur.type).toBe(SpaceType.FINISH);
-  });
-
-  test('Space.Special', () => {
-    while (cur) {
-      if (cur.special) expect(cur.special).not.toBeNull();
-      cur = cur.next;
+  test('test traversing entire list backwards', () => {
+    while (space.next) {
+      space = space.next;
+      expect(space.previous).not.toBeNull();
+      expect(space.previous).toBeInstanceOf(Space);
     }
   });
-
-  test('SpaceType Chute', () => {
-    while (cur) {
-      if (cur.type === SpaceType.CHUTE) {
-        expect(cur.special).not.toBeNull();
-        expect(cur.special).toBeInstanceOf(Space);
-      }
-      cur = cur.next;
-    }
-  });
-
-  test('SpaceType Ladder', () => {
-    while (cur) {
-      if (cur.type === SpaceType.LADDER) {
-        expect(cur.special).not.toBeNull();
-        expect(cur.special).toBeInstanceOf(Space);
-      }
-      cur = cur.next;
-    }
-  });
-
-  test('Avatar position / space recognition after Die roll method', () => {
-    avatar1.move(rollValue);
-    avatar2.move(rollValue);
-    let avatar1Space = avatar1.location;
-    let avatar2Space = avatar2.location;
-
-    for (let i = 0; i < rollValue; i++) {
-      cur = cur.next;
-    }
-    if (cur.type === SpaceType.NORMAL) {
-      if (cur.next.type === SpaceType.NORMAL) {
-        expect(avatar1Space === cur.next).toBeTruthy();
-        expect(avatar2Space === cur).toBeTruthy();
-        expect(avatar1Space.occupied === cur.next.occupied).toBeTruthy();
-        expect(avatar2Space.occupied === cur.occupied).toBeTruthy();
-      } else {
-        expect(avatar1Space === cur.next.special).toBeTruthy();
-        expect(avatar1Space.occupied === cur.next.special.occupied).toBeTruthy();
-      }
-    }
-  });
-  // /*
-  test('Avatar landing on chute', () => {
-    while (cur) {
-      if (cur.type === SpaceType.CHUTE) {
-        cur.land(avatar1);
-        break;
-      }
-      cur = cur.next;
-    }
-    if (avatar1.location.type === SpaceType.NORMAL) expect(avatar1.location).toEqual(cur.special);
-  });
-
-  test('Avatar landing on ladder', () => {
-    while (cur) {
-      if (cur.type === SpaceType.LADDER) {
-        cur.land(avatar1);
-        break;
-      }
-      cur = cur.next;
-    }
-    expect(avatar1.location).toEqual(cur.special);
-  });
-  // */
 });

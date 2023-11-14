@@ -1,6 +1,12 @@
 //If there is a setting I need to change in VSCode or Prettier, please advise, I do not like how the comments formatted in between some of the code
 
 export class Board {
+  /**
+   *
+   * @param {*} totalSpaces total spaces the board will have
+   * @param {*} rows the total spaces that will define a row
+   * @param {*} spaceMaker the function used to create spaces based on the index of the loop
+   */
   constructor(totalSpaces, rows, spaceMaker) {
     this.totalSpaces = totalSpaces;
     this.rowValue = rows;
