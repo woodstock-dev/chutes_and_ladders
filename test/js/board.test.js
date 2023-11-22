@@ -8,7 +8,12 @@ const spaceMaker = () => {
 let space, board;
 
 beforeEach(() => {
-  board = new Board(100, 10, spaceMaker);
+  board = new Board(
+    100,
+    spaceMaker,
+    () => 0,
+    () => 0
+  );
   space = board.boardSetup();
 });
 

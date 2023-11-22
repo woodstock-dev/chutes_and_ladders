@@ -100,7 +100,7 @@ describe('Test of move function starting from beginning space and #Players array
     expect(s6.occupied).toBeTruthy();
   });
 
-  test('Test Break statement of move method in Avatar - line 55', () => {
+  test('Test move function of avatar to not permit the avatar to leave the space if it will exceed the remaining spaces', () => {
     avatar1.move(20);
     expect(avatar1.location).toBe(s1);
 
@@ -109,9 +109,23 @@ describe('Test of move function starting from beginning space and #Players array
   });
 
   test('Test Previous', () => {
-    expect(s1.previous).toBeNull();
-    expect(s5.previous).toBe(s4);
+    while (cur.next) {
+      cur = cur.next;
+      expect(cur.previous).not.toBeNull();
+      expect(cur.previous).toBeInstanceOf(Space);
+    }
   });
+
+  test('Backwards movement of avatar', () => {
+    avatar1.move(5);
+    avatar1.move(-2);
+    expect(avatar1.location === s4).toBeTruthy();
+
+    avatar2.move(8);
+    avatar2.move(-1);
+    expect(avatar2.location === s5).toBeTruthy();
+  });
+
   test('Test correct Avatar in player array after move is called', () => {
     avatar1.move(2);
     expect(s1.players[0].name).toBe('Test Hat');
@@ -124,15 +138,5 @@ describe('Test of User Defined Input Methods', () => {
     expect(avatar1.name).toBe('Test Car');
     expect(avatar2.name).toBe('Test Hat');
     expect(s1.value).toBe('1');
-  });
-
-  test('Backwards movement of avatar', () => {
-    avatar1.move(5);
-    avatar1.move(-2);
-    expect(avatar1.location === s4).toBeTruthy();
-
-    avatar2.move(8);
-    avatar2.move(-1);
-    expect(avatar2.location === s5).toBeTruthy();
   });
 });

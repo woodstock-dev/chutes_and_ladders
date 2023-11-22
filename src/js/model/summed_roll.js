@@ -20,6 +20,7 @@
 export class SummedRoll {
   #Numbers = [];
   #Sum = -1;
+
   constructor(numbers) {
     this.#Numbers = numbers;
     this.#Sum = this.#Numbers.reduce((a, b) => a + b, 0);

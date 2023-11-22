@@ -1,0 +1,28 @@
+.Rows {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  height: 10vh;
+  width: 100vw;
+}
+
+.Spaces {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  color: #ff0000;
+  font-family: fira code;
+  font-size: x-large;
+  font-weight: bold;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid black;
+}
+body {
+  background-color: #c0c0c0;
+}
+
+#PlayerName{
+  border: 2px solid black;
+  margin-bottom: 100px;
+}

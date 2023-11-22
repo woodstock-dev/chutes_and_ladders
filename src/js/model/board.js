@@ -7,23 +7,28 @@ export class Board {
    * @param {*} rows the total spaces that will define a row
    * @param {*} spaceMaker the function used to create spaces based on the index of the loop
    */
-  constructor(totalSpaces, rows, spaceMaker) {
+  constructor(totalSpaces, spaceMaker, specialValuesMaker, connectSpecials) {
     this.totalSpaces = totalSpaces;
-    this.rowValue = rows;
     this.spaceMaker = spaceMaker;
+    this.specialValuesMaker = specialValuesMaker;
+    this.connectSpecials = connectSpecials;
+    this.startSpace = this.boardSetup();
   }
 
   /**
    * @returns {Space} | starting space for the board
    */
+
+  //builds the board from top down
   boardSetup() {
-    //builds the board from top down
+    this.specialValuesMaker();
     let space = this.spaceMaker(this.totalSpaces);
     for (let indexOfSpace = this.totalSpaces - 1; indexOfSpace > 0; indexOfSpace--) {
       space.previous = this.spaceMaker(indexOfSpace);
       space.previous.next = space;
       space = space.previous;
     }
+    this.connectSpecials();
     return space;
   }
 }

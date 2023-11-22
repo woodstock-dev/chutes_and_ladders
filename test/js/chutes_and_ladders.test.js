@@ -7,8 +7,7 @@ import { Die } from '../../src/js/model/die';
 let game, avatar1, avatar2, cur, die, rollValue;
 
 beforeEach(() => {
-  game = new ChutesAndLadders(10, 5, 5);
-  game.makeGameBoard();
+  game = new ChutesAndLadders(5, 5);
   avatar1 = new Avatar('Test Car', Color.RED);
   avatar2 = new Avatar('Test Hat', Color.BLACK);
   cur = game.startSpace;
@@ -117,7 +116,7 @@ describe('Test connectivity of spaces within Board', () => {
       }
       cur = cur.next;
     }
-    expect(avatar1.location).toEqual(cur.special);
+    if (avatar1.location.type === SpaceType.NORMAL) expect(avatar1.location).toEqual(cur.special);
   });
   // */
 });

@@ -1,6 +1,25 @@
 import { Board } from './board.js';
+import { Avatar, AvatarList } from './avatar.js';
 import { Space, SpaceType } from './space.js';
 import { RangeSelector } from './range.js';
+import { PlayerSetup } from './player_setup.js';
+import { Die } from './die.js';
+import { generateRandomNumber, rollDice } from './utils.js';
+import PromptSync from 'prompt-sync';
+
+/**
+ * select avatar - method that is invoked when new player is created
+ * register player - that will
+ * play:
+ * take turn
+ * isWinner()
+ * reset EVERYTHING
+ * list of pieces in game class to verify no 2 are the same
+ * game will determine order of play for players playing
+ *
+ */
+
+//EVERYTHING IS BASED ON A PERFECT SQUARE BOARD, CERTAIN METHODS WILL NEED TO BE MODIFIED IF USING NUMBERS THAT WILL NOT MAKE A PERFECT SQUARE
 
 export class ChutesAndLadders {
   /**
@@ -10,18 +29,27 @@ export class ChutesAndLadders {
    * @param {Number} ladders number of ladders
    */
 
-  constructor(rows, chutes, ladders) {
+  constructor(chutes, ladders) {
     this.TOTAL_SPACES = 100;
-    this.ROWS = rows;
+    this.ROWS = Math.ceil(this.TOTAL_SPACES / (this.TOTAL_SPACES / 10));
     this.CHUTES = chutes;
     this.LADDERS = ladders;
     this.MAX_SPECIAL_DISTANCE = 40;
+    this.MAX_PLAYERS = 4;
+    this.DIE = new Die(6);
     this.uniqueSpecialValues = new Set();
     this.uniqueSpecialValuesDump = new Set();
     this.chuteCount = 0;
     this.ladderCount = 0;
     this.specials = [];
-    this.startSpace = null;
+    this.startSpace = this.makeGameBoard();
+    this.readyToPlay = false;
+    this.playersArray = [];
+    this.avatarList = AvatarList;
+    this.playerOrder = Array.from({ length: this.MAX_PLAYERS }, (_, i) => i + 1);
+    this.winner = false;
+    this.currentPlayer = 0;
+    this.prompt = PromptSync();
   }
 
   /**
@@ -29,10 +57,8 @@ export class ChutesAndLadders {
    */
 
   makeGameBoard() {
-    this.specialValuesMaker();
-    const board = new Board(this.TOTAL_SPACES, this.ROWS, this.spaceMaker);
-    this.startSpace = board.boardSetup();
-    this.connectSpecials(this.specials);
+    const board = new Board(this.TOTAL_SPACES, this.spaceMaker, this.specialValuesMaker, this.connectSpecials);
+    return board.startSpace;
   }
 
   /**
@@ -95,32 +121,29 @@ export class ChutesAndLadders {
    * @param {Number} max total number of spaces
    * @returns
    */
-  specialValuesMaker(min = this.minValue(), max = this.TOTAL_SPACES) {
+  specialValuesMaker = (min = this.minValue(), max = this.TOTAL_SPACES) => {
     if (this.uniqueSpecialValues.size === this.CHUTES + this.LADDERS) return;
-    const specialValue = new RangeSelector(min, max).random();
+    const specialValue = new RangeSelector(min, max).random;
     if (this.uniqueSpecialValues.has(specialValue)) this.specialValuesMaker(min, max);
     else {
       this.uniqueSpecialValues.add(specialValue);
       this.specialValuesMaker(min - (this.ROWS - 1), max - (this.ROWS - 1));
     }
     return this.uniqueSpecialValues;
-  }
+  };
 
   /**
-   *
-   * @param {Array.<Space>} specials is that is populated in the spaceMaker method with the the SpaceTypes of CHUTE or LADDER
+   *  connects the specials after the spaces are made
    */
-  connectSpecials(specials) {
+  connectSpecials = () => {
     let dummyNode = null;
     let indexOfSpace = undefined;
 
-    for (let i = 0; i < specials.length; i++) {
-      [dummyNode, indexOfSpace] = specials[i];
-      dummyNode.type === SpaceType.CHUTE
-        ? (dummyNode.special = this._connectChute(dummyNode, indexOfSpace))
-        : (dummyNode.special = this._connectLadder(dummyNode, indexOfSpace));
+    for (let i = 0; i < this.specials.length; i++) {
+      [dummyNode, indexOfSpace] = this.specials[i];
+      dummyNode.type === SpaceType.CHUTE ? (dummyNode.special = this._connectChute(dummyNode, indexOfSpace)) : (dummyNode.special = this._connectLadder(dummyNode, indexOfSpace));
     }
-  }
+  };
   /**
    *
    * @param {Space} dummyNode is the space that has the SpaceType.CHUTE
@@ -129,14 +152,17 @@ export class ChutesAndLadders {
    */
   _connectChute(dummyNode, indexOfSpace) {
     const maxValForRand = indexOfSpace > this.MAX_SPECIAL_DISTANCE ? this.MAX_SPECIAL_DISTANCE : indexOfSpace;
-    const minDist = this.rowFinder(indexOfSpace) - 1;
-    let cDistanceToTraverse = this.specialDumpValue(minDist, maxValForRand) ?? this.MIN_DIST;
-    while (cDistanceToTraverse > 0) {
-      dummyNode = dummyNode.previous;
-      cDistanceToTraverse--;
-    }
+    const minDist = indexOfSpace % this.ROWS;
+    let cDistanceToTraverse = new RangeSelector(minDist, maxValForRand).random;
+    let space = indexOfSpace - cDistanceToTraverse;
+    if (!this.specialDumpValueChecker(space)) {
+      while (cDistanceToTraverse > 0) {
+        dummyNode = dummyNode.previous;
+        cDistanceToTraverse--;
+      }
+    } else return this._connectChute(dummyNode, indexOfSpace);
     //extra check to make sure the dumpSpace for special is a normal space, if not, move back 1
-    return dummyNode.type === SpaceType.NORMAL ? dummyNode : dummyNode.previous;
+    return dummyNode;
   }
 
   /**
@@ -146,34 +172,28 @@ export class ChutesAndLadders {
    * @returns the space.special connection
    */
   _connectLadder(dummyNode, indexOfSpace) {
-    const maxValForRand =
-      this.TOTAL_SPACES - indexOfSpace > this.MAX_SPECIAL_DISTANCE
-        ? this.MAX_SPECIAL_DISTANCE
-        : this.TOTAL_SPACES - indexOfSpace;
-    const minDist = this.rowFinder(indexOfSpace) + 1;
-    let lDistanceToTraverse = this.specialDumpValue(minDist, maxValForRand) ?? this.MIN_DIST;
-    while (lDistanceToTraverse > 0) {
-      dummyNode = dummyNode.next;
-      lDistanceToTraverse--;
-    }
-    return dummyNode.type === SpaceType.NORMAL ? dummyNode : dummyNode.next; //extra check to make sure the dumpSpace for special is a normal space, if not, move back 1
+    const maxValForRand = this.TOTAL_SPACES - indexOfSpace > this.MAX_SPECIAL_DISTANCE ? this.MAX_SPECIAL_DISTANCE : this.TOTAL_SPACES - indexOfSpace;
+    const minDist = this.ROWS - (indexOfSpace % this.ROWS);
+    let lDistanceToTraverse = new RangeSelector(minDist, maxValForRand).random;
+    let space = indexOfSpace + lDistanceToTraverse;
+    if (!this.specialDumpValueChecker(space)) {
+      while (lDistanceToTraverse > 0) {
+        dummyNode = dummyNode.next;
+        lDistanceToTraverse--;
+      }
+    } else return this._connectLadder(dummyNode, indexOfSpace);
+
+    return dummyNode;
   }
 
   /**
    *
-   * @param {Number} min is the first space in the row above the space selected to be a special space
-   * @param {Number} max is the greatest distance the span of spaces that the special connection can be while keeping the space within the rules or constants set forth
-   * @returns the distance to traverse from the index of the special space
+   * @param {Number} space is the mock value for the dump index for special space
+   * @returns checks whether any of the other special spaces or special space dump values have been used
    */
-  specialDumpValue(min, max) {
-    if (this.uniqueSpecialValuesDump.size > this.uniqueSpecialValues.size)
-      throw new Error('Find better way to randomize'); //base case to prevent error only
-
-    const dumpValue = new RangeSelector(min, max).random();
-    this.uniqueSpecialValues.has(this.uniqueSpecialValuesDump)
-      ? this.specialDumpValue(min, max)
-      : this.uniqueSpecialValuesDump.add(dumpValue.random);
-    return dumpValue;
+  specialDumpValueChecker(space) {
+    this.uniqueSpecialValuesDump.add(space);
+    return this.uniqueSpecialValues.has(this.uniqueSpecialValuesDump);
   }
 
   /**
@@ -196,8 +216,8 @@ export class ChutesAndLadders {
     let gameBoard = [];
     let row = [];
     let indexOfSpace = 1;
-    let chute = '\x1b[31mCT\x1b[0m';
-    let ladder = '\x1b[31mLD\x1b[0m';
+    let chute = '-CT';
+    let ladder = '+LD';
     while (space) {
       let rowCount = this.rowFinder(indexOfSpace);
       if (space.type === SpaceType.CHUTE) row.push(chute);
@@ -213,23 +233,73 @@ export class ChutesAndLadders {
     }
     return gameBoard.reverse();
   }
+
+  registerPlayer() {
+    let currentAvailableAvatars = Object.keys(this.avatarList);
+    let playerOrder = this.generatePlayerOrder();
+    const player = new PlayerSetup(currentAvailableAvatars, this.MAX_PLAYERS, playerOrder).registerPlayer();
+    const usedAvatarName = player.playerAvatar.avatarName;
+    if (usedAvatarName in this.avatarList) delete this.avatarList[usedAvatarName];
+    return player;
+  }
+
+  generatePlayerOrder() {
+    let pos = generateRandomNumber(this.MAX_PLAYERS);
+    if (this.playerOrder.includes(pos)) {
+      this.playerOrder = this.playerOrder.filter((num) => num !== pos);
+      return pos;
+    } else return this.generatePlayerOrder();
+  }
+
+  setPlayersAvatars() {
+    let player;
+    while (this.readyToPlay === false || this.playerArr.length < 4) {
+      if (this.playersArray.length >= 2) {
+        let q = this.prompt('Ready to play (y/n): ').toUpperCase();
+        if (q === 'Y') break;
+      }
+      player = this.registerPlayer();
+      this.playersArray.push(player);
+    }
+  }
+
+  startGame() {
+    this.setPlayersAvatars();
+    this.playersArray = this.playersArray.sort(this.sortPlayersByOrder);
+    for (let player of this.playersArray) {
+      this.startSpace.land(player.playerAvatar);
+    }
+    let current = this.takeTurns();
+    while (this.winner === false) {
+      const dieRoll = rollDice(this.DIE);
+      console.log(current);
+      current.avatar.move(dieRoll);
+      current = this.takeTurns();
+
+      if (current.avatar.location.type === SpaceType.FINISH) this.winner = true;
+    }
+    console.log(current);
+  }
+
+  sortPlayersByOrder(a, b) {
+    return a.playerOrder - b.playerOrder;
+  }
+
+  takeTurns() {
+    this.currentPlayer++;
+    if (this.currentPlayer === this.playersArray.length) this.currentPlayer = 0;
+    return this.playersArray[this.currentPlayer];
+  }
 }
+// /**
 
-// BELOW IS PROCESS TO MAKE ACTIVE GAME BOARD
+// BELOW IS HOW TO MAKE GAME, VIEW REAL GAMEPLAY, VIEW GAMEBOARD
+// TO INTERACT WITH GAME IN TERMINAL PLEASE ADD npm install prompt-sync
 
-//10 is spaces per row, 5 chutes, 5 ladders, 100 total spaces is a constant declared in the constructor
-const chutesAndLadders = new ChutesAndLadders(10, 5, 5);
-//call to makeGameBoard() returns the board constructed in the Board class and provides a property of startSpace which is the first space of gameplay
-chutesAndLadders.makeGameBoard();
-// game is assigned to the displaySpaces method of the ChutesAndLadders game class. 'C' represents chutes and 'L' represents ladders
-const game = chutesAndLadders.displayGameBoard();
-// I left this in so anyone could see my gameboard easily
-console.log(
-  game
-    .map((row, idx) => {
-      if (idx === 0) return row.join('  ');
-      if (idx === 9) return row.join('   ');
-      else return row.join('  ');
-    })
-    .join('\n ')
-);
+const chutesAndLadders = new ChutesAndLadders(5, 5);
+const gamePlay = chutesAndLadders.startGame();
+const gameBoard = chutesAndLadders.displayGameBoard();
+//THIS IS THE WAY TO SEE A GAME PLAYED OUT AUTOMATICALLY
+console.log(gamePlay);
+//VIEW GAMEBOARD
+// console.log(gameBoard)

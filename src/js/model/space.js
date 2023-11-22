@@ -21,16 +21,13 @@ export class SpaceType {
 }
 
 export class Space {
-  #Value = '';
-  #Type = SpaceType.NORMAL;
-  #Next = null;
-  #Special = null;
-  #Players = [];
-  #Previous = null;
-
   constructor(type, value) {
-    this.#Type = type;
-    this.#Value = String(value);
+    this.spaceType = type;
+    this.spaceValue = String(value);
+    this.spaceNext = null;
+    this.playersArr = [];
+    this.spacePrevious = null;
+    this.spaceSpecial = null;
   }
 
   /**
@@ -39,9 +36,9 @@ export class Space {
    */
   land(avatar) {
     this.ifOccupied();
-    if (this.#Special !== null) this.#Special.land(avatar);
+    if (this.spaceSpecial !== null) this.spaceSpecial.land(avatar);
     else {
-      this.#Players.push(avatar);
+      this.playersArr.push(avatar);
       avatar.location = this;
     }
   }
@@ -49,8 +46,8 @@ export class Space {
    * Is a method to be invoked when an avatar leaves a space
    */
   leave() {
-    if (this.type === SpaceType.START) this.#Players.shift();
-    else this.#Players.pop();
+    if (this.type === SpaceType.START) this.playersArr.shift();
+    else this.playersArr.pop();
   }
 
   ifOccupied() {
@@ -64,32 +61,32 @@ export class Space {
    * @return {string}
    */
   get value() {
-    return this.#Value;
+    return this.spaceValue;
   }
   /**
    *
    * @return {number}
    */
   get type() {
-    return this.#Type;
+    return this.spaceType;
   }
   /**
    *
    * @return {Space | null}
    */
   get next() {
-    return this.#Next;
+    return this.spaceNext;
   }
 
   set next(location) {
-    this.#Next = location;
+    this.spaceNext = location;
   }
   /**
    *
    * @return {Space | null}
    */
   get special() {
-    return this.#Special;
+    return this.spaceSpecial;
   }
 
   /**
@@ -98,28 +95,28 @@ export class Space {
    * @return {Space} the current space
    */
   set special(location) {
-    this.#Special = location;
+    this.spaceSpecial = location;
   }
   /**
    *
-   * @return {*[]} a copy of the array of players
+   * @return {*[]} a copy of the array ofplayers
    */
   get players() {
-    return [...this.#Players];
+    return [...this.playersArr];
   }
   /**
-   * @return boolean true if the space has players, false otherwise
+   * @return boolean true if the space hasplayers, false otherwise
    */
   get occupied() {
     return this.players.length > 0;
   }
 
   get previous() {
-    return this.#Previous;
+    return this.spacePrevious;
   }
 
   set previous(previous) {
-    this.#Previous = previous;
+    this.spacePrevious = previous;
   }
 
   /**

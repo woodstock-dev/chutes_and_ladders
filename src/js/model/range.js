@@ -13,7 +13,7 @@ export class RangeSelector {
     this.max = max;
   }
 
-  random = () => {
+  get random() {
     return Math.floor(Math.random() * (this.max - this.min) + this.min);
-  };
+  }
 }

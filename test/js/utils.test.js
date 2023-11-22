@@ -13,7 +13,14 @@
 // limitations under the License.
 
 import { Die } from '../../src/js/model/die';
-import { generateRandomNumber, rollDice, rollMultipleAndSum, rollMultipleDiceMultipleTimes, rollSingleDiceMultipleTimes, rollSingleDiceMultipleTimesAndSum } from '../../src/js/model/utils';
+import {
+  generateRandomNumber,
+  rollDice,
+  rollMultipleAndSum,
+  rollMultipleDiceMultipleTimes,
+  rollSingleDiceMultipleTimes,
+  rollSingleDiceMultipleTimesAndSum,
+} from '../../src/js/model/utils';
 
 let D1, D2, D1_Sides, D2_Sides, max, min, count, totalRolls, minSideValue;
 
