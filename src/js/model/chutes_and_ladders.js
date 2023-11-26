@@ -1,11 +1,10 @@
 import { Board } from './board.js';
-import { Avatar, AvatarList } from './avatar.js';
+import { Color } from './avatar.js';
 import { Space, SpaceType } from './space.js';
 import { RangeSelector } from './range.js';
 import { PlayerSetup } from './player_setup.js';
 import { Die } from './die.js';
 import { generateRandomNumber, rollDice } from './utils.js';
-import PromptSync from 'prompt-sync';
 
 /**
  * select avatar - method that is invoked when new player is created
@@ -36,6 +35,7 @@ export class ChutesAndLadders {
     this.LADDERS = ladders;
     this.MAX_SPECIAL_DISTANCE = 40;
     this.MAX_PLAYERS = 4;
+    this.MIN_PLAYERS = 2;
     this.DIE = new Die(6);
     this.uniqueSpecialValues = new Set();
     this.uniqueSpecialValuesDump = new Set();
@@ -43,13 +43,18 @@ export class ChutesAndLadders {
     this.ladderCount = 0;
     this.specials = [];
     this.startSpace = this.makeGameBoard();
-    this.readyToPlay = false;
     this.playersArray = [];
-    this.avatarList = AvatarList;
-    this.playerOrder = Array.from({ length: this.MAX_PLAYERS }, (_, i) => i + 1);
-    this.winner = false;
+    this.colorList = Object.keys(Color);
     this.currentPlayer = 0;
-    this.prompt = PromptSync();
+    this.playerInTurn = undefined;
+    this.readyToPlay = false;
+    this.avatarList = [
+      { id: 0, name: 'UNDEFINED' },
+      { id: 1, name: 'XENOMORPH' },
+      { id: 2, name: 'PREDATOR' },
+      { id: 3, name: 'TERMINATOR' },
+      { id: 4, name: 'ROBOCOP' },
+    ];
   }
 
   /**
@@ -119,7 +124,7 @@ export class ChutesAndLadders {
    *
    * @param {Number} min sets the minimum value for any total number of spaces
    * @param {Number} max total number of spaces
-   * @returns
+   * @returns the values of the special spaces according to number of chutes and ladders provided
    */
   specialValuesMaker = (min = this.minValue(), max = this.TOTAL_SPACES) => {
     if (this.uniqueSpecialValues.size === this.CHUTES + this.LADDERS) return;
@@ -216,13 +221,10 @@ export class ChutesAndLadders {
     let gameBoard = [];
     let row = [];
     let indexOfSpace = 1;
-    let chute = '-CT';
-    let ladder = '+LD';
     while (space) {
       let rowCount = this.rowFinder(indexOfSpace);
-      if (space.type === SpaceType.CHUTE) row.push(chute);
-      else if (space.type === SpaceType.LADDER) row.push(ladder);
-      else row.push(indexOfSpace);
+      if (space.occupied) row.push(space.players[0].name);
+      else row.push(space.value);
       if (row.length === this.ROWS) {
         row = rowCount % 2 !== 0 ? row : row.reverse();
         gameBoard.push(row);
@@ -234,61 +236,53 @@ export class ChutesAndLadders {
     return gameBoard.reverse();
   }
 
-  registerPlayer() {
-    let currentAvailableAvatars = Object.keys(this.avatarList);
-    let playerOrder = this.generatePlayerOrder();
-    const player = new PlayerSetup(currentAvailableAvatars, this.MAX_PLAYERS, playerOrder).registerPlayer();
-    const usedAvatarName = player.playerAvatar.avatarName;
-    if (usedAvatarName in this.avatarList) delete this.avatarList[usedAvatarName];
-    return player;
+  registerPlayer(name, avatar, color) {
+    if (this.playersArray.length === this.MAX_PLAYERS) return;
+    if (!name || !avatar || !color) return;
+    const player = new PlayerSetup(name, avatar, color).registerPlayer();
+    this.generatePlayerOrder(player);
   }
 
-  generatePlayerOrder() {
-    let pos = generateRandomNumber(this.MAX_PLAYERS);
-    if (this.playerOrder.includes(pos)) {
-      this.playerOrder = this.playerOrder.filter((num) => num !== pos);
-      return pos;
-    } else return this.generatePlayerOrder();
+  generatePlayerOrder(player) {
+    const unshiftOrPush = generateRandomNumber(2);
+    if (unshiftOrPush === 1) this.playersArray.push(player);
+    if (unshiftOrPush === 2) this.playersArray.unshift(player);
   }
 
-  setPlayersAvatars() {
-    let player;
-    while (this.readyToPlay === false || this.playerArr.length < 4) {
-      if (this.playersArray.length >= 2) {
-        let q = this.prompt('Ready to play (y/n): ').toUpperCase();
-        if (q === 'Y') break;
-      }
-      player = this.registerPlayer();
-      this.playersArray.push(player);
+  setOrderAndStart() {
+    if (!this.readyToPlay) {
+      this.playersArray.forEach((player, idx) => {
+        player.playerOrder = idx + 1;
+        this.startSpace.land(player.avatar);
+      });
+      this.playerInTurn = this.playersArray[this.currentPlayer];
+    } else alert("Click the 'Ready To Play' Button");
+  }
+
+  takeTurn() {
+    if (this.playerInTurn.avatar.location.type === SpaceType.FINISH) {
+      this.wonGame(this.playerInTurn);
+      return;
     }
+    const moveDist = rollDice(this.DIE);
+    this.playerInTurn = this.rotatePlayers();
+    this.playerInTurn.avatar.move(moveDist);
   }
 
-  startGame() {
-    this.setPlayersAvatars();
-    this.playersArray = this.playersArray.sort(this.sortPlayersByOrder);
-    for (let player of this.playersArray) {
-      this.startSpace.land(player.playerAvatar);
-    }
-    let current = this.takeTurns();
-    while (this.winner === false) {
-      const dieRoll = rollDice(this.DIE);
-      console.log(current);
-      current.avatar.move(dieRoll);
-      current = this.takeTurns();
-
-      if (current.avatar.location.type === SpaceType.FINISH) this.winner = true;
-    }
-    console.log(current);
-  }
-
-  sortPlayersByOrder(a, b) {
-    return a.playerOrder - b.playerOrder;
-  }
-
-  takeTurns() {
+  rotatePlayers() {
     this.currentPlayer++;
     if (this.currentPlayer === this.playersArray.length) this.currentPlayer = 0;
     return this.playersArray[this.currentPlayer];
+  }
+
+  wonGame(player) {
+    console.log(`CONGRADULATIONS ${player.name}... YOU WON!!!!`);
+    this.reset();
+  }
+
+  reset() {
+    this.makeGameBoard();
+    this.setOrderAndStart();
   }
 }
 // /**
@@ -296,10 +290,10 @@ export class ChutesAndLadders {
 // BELOW IS HOW TO MAKE GAME, VIEW REAL GAMEPLAY, VIEW GAMEBOARD
 // TO INTERACT WITH GAME IN TERMINAL PLEASE ADD npm install prompt-sync
 
-const chutesAndLadders = new ChutesAndLadders(5, 5);
-const gamePlay = chutesAndLadders.startGame();
-const gameBoard = chutesAndLadders.displayGameBoard();
+// const chutesAndLadders = new ChutesAndLadders(5, 5);
+// const gamePlay = chutesAndLadders.startGame();
+// const gameBoard = chutesAndLadders.displayGameBoard();
 //THIS IS THE WAY TO SEE A GAME PLAYED OUT AUTOMATICALLY
-console.log(gamePlay);
+// console.log(gamePlay);
 //VIEW GAMEBOARD
 // console.log(gameBoard)

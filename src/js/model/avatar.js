@@ -12,13 +12,6 @@ export class Color {
   static PINK = 10;
 }
 
-export class AvatarList {
-  static XENOMORPH = 0;
-  static PREDATOR = 1;
-  static TERMINATOR = 2;
-  static ROBOCOP = 3;
-}
-
 export class Avatar {
   /**
    *
@@ -80,7 +73,7 @@ export class Avatar {
    */
 
   move(numberOfSpaces) {
-    let locBeforeMove = this.avatarLocation;
+    let locBeforeMove = this.location;
     const locAfterMove = numberOfSpaces > 0 ? this._moveForward(numberOfSpaces) : this._moveBack(Math.abs(numberOfSpaces));
 
     if (locAfterMove) {

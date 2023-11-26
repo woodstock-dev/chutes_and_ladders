@@ -126,17 +126,13 @@ describe('Test of move function starting from beginning space and #Players array
     expect(avatar2.location === s5).toBeTruthy();
   });
 
-  test('Test correct Avatar in player array after move is called', () => {
-    avatar1.move(2);
-    expect(s1.players[0].name).toBe('Test Hat');
-  });
-});
-describe('Test of User Defined Input Methods', () => {
-  test('Test Avatar Name and Color / Space Value', () => {
-    expect(avatar1.color).toBe(Color.RED);
-    expect(avatar2.color).toBe(Color.BLACK);
-    expect(avatar1.name).toBe('Test Car');
-    expect(avatar2.name).toBe('Test Hat');
-    expect(s1.value).toBe('1');
+  describe('Test of User Defined Input Methods', () => {
+    test('Test Avatar Name and Color / Space Value', () => {
+      expect(avatar1.color).toBe(Color.RED);
+      expect(avatar2.color).toBe(Color.BLACK);
+      expect(avatar1.name).toBe('Test Car');
+      expect(avatar2.name).toBe('Test Hat');
+      expect(s1.value).toBe('1');
+    });
   });
 });

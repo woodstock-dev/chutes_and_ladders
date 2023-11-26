@@ -46,8 +46,7 @@ export class Space {
    * Is a method to be invoked when an avatar leaves a space
    */
   leave() {
-    if (this.type === SpaceType.START) this.playersArr.shift();
-    else this.playersArr.pop();
+    this.playersArr.pop();
   }
 
   ifOccupied() {
@@ -102,7 +101,7 @@ export class Space {
    * @return {*[]} a copy of the array ofplayers
    */
   get players() {
-    return [...this.playersArr];
+    return this.playersArr;
   }
   /**
    * @return boolean true if the space hasplayers, false otherwise
