@@ -1,5 +1,3 @@
-//If there is a setting I need to change in VSCode or Prettier, please advise, I do not like how the comments formatted in between some of the code
-
 export class Board {
   /**
    *

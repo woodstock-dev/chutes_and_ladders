@@ -1,4 +1,3 @@
-// TEST for Board.js
 import { ChutesAndLadders } from '../../src/js/model/chutes_and_ladders';
 import { Space, SpaceType } from '../../src/js/model/space';
 import { Avatar, Color } from '../../src/js/model/avatar';
@@ -31,10 +30,6 @@ describe('Test connectivity of spaces within Board', () => {
   test('Test Previous method', () => {
     expect(cur.previous).toBeNull();
     expect(cur.next.previous.type).toBe(SpaceType.START);
-  });
-
-  test('Test totalSpaces of Board', () => {
-    expect(game.TOTAL_SPACES).toEqual(expect.any(Number));
   });
 
   test('SpaceType Start', () => {
@@ -96,7 +91,7 @@ describe('Test connectivity of spaces within Board', () => {
       }
     }
   });
-  // /*
+
   test('Avatar landing on chute', () => {
     while (cur) {
       if (cur.type === SpaceType.CHUTE) {
@@ -118,5 +113,4 @@ describe('Test connectivity of spaces within Board', () => {
     }
     if (avatar1.location.type === SpaceType.NORMAL) expect(avatar1.location).toEqual(cur.special);
   });
-  // */
 });

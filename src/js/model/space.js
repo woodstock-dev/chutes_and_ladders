@@ -51,7 +51,7 @@ export class Space {
 
   ifOccupied() {
     if (this.occupied && this.type !== SpaceType.START) {
-      this.players[0].move(1);
+      this.playersArr[0].move(1);
     }
   }
 

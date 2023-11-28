@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './App.css';
 import Home from './pages/Home';
-import DisplayActiveGameBoard from './pages/DisplayGameBoard';
+import DisplayActiveGameBoard from './components/DisplayGameBoard';
 import PlayerName from './components/PlayerName';
 import AvatarColor from './components/AvatarColor';
 import AvatarList from './components/AvatarList';
@@ -9,15 +9,13 @@ import Game from './components/Game';
 import Button from './components/Button';
 
 const game = Game();
-const avatarColor = game.colorList;
+const avatarColor = Object.assign({}, game.colorList);
 const board = game.displayGameBoard();
-const readyToPlay = game.readyToPlay;
-const players = game.playersArray;
 const avatarList = game.avatarList;
 
 function App() {
   const [getAvatarNames, setAvatarNames] = useState(avatarList);
-  const [getBoard, setBoardPositions] = useState(board);
+  const [readyToPlay, setReadyToPlay] = useState(false);
 
   const avatarComponents = [];
 
@@ -30,13 +28,9 @@ function App() {
     const avatar = event.target.avatarName.value;
     const player = event.target.playerName.value;
     const color = event.target.avatarColor.value;
-    handleAvatarName(event);
-    const g = game.registerPlayer(player, avatar, color);
+    setAvatarNames(getAvatarNames.filter((a) => a.name !== avatar));
+    game.registerPlayer(player, avatar, color);
   };
-
-  function handleAvatarName(event) {
-    setAvatarNames(getAvatarNames.filter((a) => a.name !== event.target.avatarName.value));
-  }
 
   function onReadyToPlay() {
     game.setOrderAndStart();
@@ -44,24 +38,26 @@ function App() {
 
   function onTakeTurn() {
     game.takeTurn();
-    game.displayGameBoard();
-    setBoardPositions();
+    setReadyToPlay(!readyToPlay);
     console.log([game.playerInTurn.avatar.name, game.playerInTurn.avatar.location.value]);
   }
 
-  function handleBoardReRender() {
-    game.displayGameBoard();
+  function onGameReset() {
+    game.reset();
   }
   getAvatarNames.map((a) => {
     avatarComponents.push(<AvatarList avatarName={a.name} avatarId={a.id} key={a.id} />);
   });
 
-  colorsComponents.push(<AvatarColor colorList={avatarColor} key={avatarColor} />);
+  colorsComponents.push(<AvatarColor colorList={Object.keys(avatarColor).slice(1)} key={Object.values(avatarColor)} />);
 
-  gameBoard.push(<DisplayActiveGameBoard board={board} key={game} />);
-
+  board.map((row) => {
+    row.map((space, j) => {
+      gameBoard.push(<DisplayActiveGameBoard space={space} state={readyToPlay} key={space.value} />);
+    });
+  });
   return (
-    <div>
+    <div className="main">
       <Home />
       <form onSubmit={handleRegisterPlayer}>
         <h3>Player Name:</h3>
@@ -80,7 +76,9 @@ function App() {
       <Button type={'Button'} name={'Take Turn'} onClick={onTakeTurn} />
       <br></br>
       <br></br>
-      <div>{gameBoard}</div>
+      <div className="Rows">{gameBoard}</div>
+      <br></br>
+      <Button type={'button'} name={'Reset'} onClick={onGameReset} />
     </div>
   );
 }
