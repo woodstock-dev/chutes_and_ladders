@@ -204,9 +204,9 @@ export class ChutesAndLadders {
       this.wonGame(this.playerInTurn);
       return;
     }
-    this.playerInTurn = this.rotatePlayers();
     const moveDist = rollDice(DIE);
     this.playerInTurn.avatar.move(moveDist);
+    this.playerInTurn = this.rotatePlayers();
   }
 
   rotatePlayers() {
