@@ -1,15 +1,20 @@
 import { ChutesAndLadders } from '../../src/js/model/chutes_and_ladders';
+import { PlayerSetup } from '../../src/js/model/player_setup';
 import { Space, SpaceType } from '../../src/js/model/space';
 import { Avatar, Color } from '../../src/js/model/avatar';
 import { Die } from '../../src/js/model/die';
 
-let game, avatar1, avatar2, cur, die, rollValue;
+let game, avatar1, avatar2, cur, die, rollValue, board, player1, player2;
 
 beforeEach(() => {
   game = new ChutesAndLadders(5, 5);
-  avatar1 = new Avatar('Test Car', Color.RED);
-  avatar2 = new Avatar('Test Hat', Color.BLACK);
+  board = game.displayGameBoard();
+  player1 = new PlayerSetup('Player1', 1, new Avatar('Test Car', Color.RED));
+  player2 = new PlayerSetup('Player2', 2, new Avatar('Test Hat', Color.BLACK));
   cur = game.startSpace;
+
+  avatar1 = player1.avatar;
+  avatar2 = player2.avatar;
 
   cur.land(avatar1);
   cur.land(avatar2);

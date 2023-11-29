@@ -10,11 +10,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/register": "^7.22.15",
+    "jsdom-quokka-plugin": "^1.0.16",
+    "punycode": "^2.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.1.0",
+    "@babel/core": "^7.1.0",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-transform-class-properties": "^7.1.0",
+    "@babel/plugin-transform-object-rest-spread": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react-swc": "^3.5.0",
@@ -22,6 +32,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
+    "jsdom": "^16.2.2",
     "vite": "^5.0.0"
   }
 }

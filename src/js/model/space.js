@@ -46,7 +46,8 @@ export class Space {
    * Is a method to be invoked when an avatar leaves a space
    */
   leave() {
-    this.playersArr.pop();
+    if (this.type === SpaceType.START) this.playersArr.shift();
+    else this.playersArr.pop();
   }
 
   ifOccupied() {

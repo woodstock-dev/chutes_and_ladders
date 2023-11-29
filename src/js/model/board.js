@@ -2,9 +2,11 @@ export class Board {
   /**
    *
    * @param {*} totalSpaces total spaces the board will have
-   * @param {*} rows the total spaces that will define a row
    * @param {*} spaceMaker the function used to create spaces based on the index of the loop
+   * @param {*} specialValuesMaker function passed from game to make special spaces
+   * @param {*} connectSpecials function passed from game to connect special spaces
    */
+
   constructor(totalSpaces, spaceMaker, specialValuesMaker, connectSpecials) {
     this.totalSpaces = totalSpaces;
     this.spaceMaker = spaceMaker;

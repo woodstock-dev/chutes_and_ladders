@@ -12,13 +12,18 @@
   "author": "Andrew Klapper",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@babel/cli": "7.23.4",
     "@babel/core": "^7.22.20",
+    "@babel/node": "^7.22.19",
+    "@babel/plugin-transform-class-properties": "^7.1.0",
+    "@babel/plugin-transform-object-rest-spread": "^7.0.0",
     "@babel/preset-env": "^7.22.20",
+    "@babel/preset-react": "^7.0.0",
     "@types/jest": "^29.5.5",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
-    "prettier": "3.0.3",
-    "quokka": "^0.0.7"
+    "jsdom": "^23.0.0",
+    "prettier": "3.0.3"
   },
   "quokka": {
     "plugins": [
@@ -26,6 +31,7 @@
     ]
   },
   "dependencies": {
-    "node": "^21.2.0"
+    "node": "^21.2.0",
+    "punycode": "^2.3.1"
   }
 }

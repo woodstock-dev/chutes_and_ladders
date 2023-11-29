@@ -2,15 +2,17 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   height: calc(90vh - 10px);
-  width: calc(100% - 10px);
+  width: auto;
+  size: 100vw;
+  border: 2px solid green;
+  
 }
 
 .Spaces {
-  display: flex;
-  width: 100%;
+  display: inline-block;
+  width: calc(1em *100%);
   height: 100%;
   color: #ff0000;
-  font-family: fira code;
   font-size: large;
   font-weight: bold;
   text-align: center;
@@ -18,11 +20,13 @@
   justify-content: center;
   border: 2px solid black;
   
+  
 }
 body {
   background-color: #c0c0c0;
+  font-family: fira code;
 }
 
 .main {
-  display: contents;
+  display:block;
 }

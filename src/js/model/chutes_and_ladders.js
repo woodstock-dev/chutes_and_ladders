@@ -76,7 +76,7 @@ const connectSpecials = () => {
 
 function _connectChute(dummyNode, indexOfSpace) {
   const maxValForRand = indexOfSpace > MAX_SPECIAL_DISTANCE ? MAX_SPECIAL_DISTANCE : indexOfSpace;
-  const minDist = indexOfSpace % ROWS;
+  const minDist = indexOfSpace % ROWS === 0 ? 1 : indexOfSpace % ROWS;
   let cDistanceToTraverse = new RangeSelector(minDist, maxValForRand).random;
   let space = indexOfSpace - cDistanceToTraverse;
   if (!specialDumpValueChecker(space)) {
@@ -91,7 +91,7 @@ function _connectChute(dummyNode, indexOfSpace) {
 
 function _connectLadder(dummyNode, indexOfSpace) {
   const maxValForRand = TOTAL_SPACES - indexOfSpace > MAX_SPECIAL_DISTANCE ? MAX_SPECIAL_DISTANCE : TOTAL_SPACES - indexOfSpace;
-  const minDist = ROWS - (indexOfSpace % ROWS);
+  const minDist = ROWS - (indexOfSpace % ROWS) + 1;
   let lDistanceToTraverse = new RangeSelector(minDist, maxValForRand).random;
   let space = indexOfSpace + lDistanceToTraverse;
   if (!specialDumpValueChecker(space)) {
@@ -197,6 +197,7 @@ export class ChutesAndLadders {
       });
       this.playerInTurn = this.playersArray[this.currentPlayer];
     } else alert('2 PLAYERS MINIMUM NEEDED TO START GAME');
+    console.log(this.playersArray, this.playerInTurn);
   }
 
   takeTurn() {
@@ -222,7 +223,12 @@ export class ChutesAndLadders {
 
   reset() {
     this.makeGameBoard();
-    this.playersArray.forEach((player) => this.startSpace.land(player));
+    if (!this.startSpace.playersArr.length) {
+      this.playersArray.forEach((player) => {
+        player.avatar.location.leave();
+        this.startSpace.land(player.avatar);
+      });
+    }
     readyToPlay = false;
     this.haveWinner = false;
   }
@@ -238,15 +244,3 @@ export class ChutesAndLadders {
     return uniqueSpecialValues;
   };
 }
-// /**
-
-// BELOW IS HOW TO MAKE GAME, VIEW REAL GAMEPLAY, VIEW GAMEBOARD
-// TO INTERACT WITH GAME IN TERMINAL PLEASE ADD npm install prompt-sync
-
-// const chutesAndLadders = new ChutesAndLadders(5, 5);
-// const gamePlay = chutesAndLadders.startGame();
-// const gameBoard = chutesAndLadders.displayGameBoard();
-//THIS IS THE WAY TO SEE A GAME PLAYED OUT AUTOMATICALLY
-// console.log(gamePlay);
-//VIEW GAMEBOARD
-// console.log(gameBoard)

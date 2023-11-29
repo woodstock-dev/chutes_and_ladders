@@ -9,53 +9,58 @@ import Game from './components/Game';
 import Button from './components/Button';
 
 const game = Game();
-const avatarColor = Object.assign({}, game.colorList);
+const avatarColorList = Object.assign({}, game.colorList);
 const board = game.displayGameBoard();
-const avatarList = game.avatarList;
+const avatarNameList = game.avatarList;
 
 function App() {
-  const [getAvatarNames, setAvatarNames] = useState(avatarList);
-  const [readyToPlay, setReadyToPlay] = useState(false);
-
   const avatarComponents = [];
-
+  const gameBoard = [];
   const colorsComponents = [];
 
-  const gameBoard = [];
+  const [getAvatarNames, setAvatarNames] = useState(avatarNameList);
+  const [rednerValue, flipRenderValue] = useState(false);
+  const [readyToPlay, setReadyToPlay] = useState(false);
 
   const handleRegisterPlayer = (event) => {
     event.preventDefault();
-    const avatar = event.target.avatarName.value;
     const player = event.target.playerName.value;
-    const color = event.target.avatarColor.value;
-    setAvatarNames(getAvatarNames.filter((a) => a.name !== avatar));
-    game.registerPlayer(player, avatar, color);
+    const avatar = event.target.avatarName.value;
+    const color = event.target.avatarColorList.value;
+    registerPlayerAndAvatar(player, avatar, color);
+    if (player && avatar && color) setAvatarNames(getAvatarNames.filter((a) => a.name !== avatar));
   };
 
+  const registerPlayerAndAvatar = (playerName, avatarName, avatarColor) => {
+    game.registerPlayer(playerName, avatarName, avatarColor);
+  };
   function onReadyToPlay() {
     game.setOrderAndStart();
+    setReadyToPlay(!readyToPlay);
   }
 
   function onTakeTurn() {
+    if (!readyToPlay) alert('PLEASE CLICK READY TO PLAY');
     game.takeTurn();
-    setReadyToPlay(!readyToPlay);
-    console.log([game.playerInTurn.avatar.name, game.playerInTurn.avatar.location.value]);
+    flipRenderValue(!rednerValue);
   }
 
   function onGameReset() {
     game.reset();
+    flipRenderValue(!rednerValue);
   }
   getAvatarNames.map((a) => {
     avatarComponents.push(<AvatarList avatarName={a.name} avatarId={a.id} key={a.id} />);
   });
 
-  colorsComponents.push(<AvatarColor colorList={Object.keys(avatarColor).slice(1)} key={Object.values(avatarColor)} />);
+  colorsComponents.push(<AvatarColor colorList={Object.keys(avatarColorList).slice(1)} key={Object.values(avatarColorList)} />);
 
   board.map((row) => {
-    row.map((space, j) => {
-      gameBoard.push(<DisplayActiveGameBoard space={space} state={readyToPlay} key={space.value} />);
+    row.map((space) => {
+      gameBoard.push(<DisplayActiveGameBoard space={space} rednerValue={rednerValue} flipRenderValue={flipRenderValue} key={space.value} />);
     });
   });
+
   return (
     <div className="main">
       <Home />
@@ -65,7 +70,7 @@ function App() {
         <h3>Avatar Name:</h3>
         <select name="avatarName">{avatarComponents}</select>
         <h3>Avatar Color: </h3>
-        <select name="avatarColor">{colorsComponents}</select>
+        <select name="avatarColorList">{colorsComponents}</select>
         <h4>Register Player:</h4>
         <Button type={'submit'} name={'Click to Register'} />
       </form>
@@ -75,6 +80,7 @@ function App() {
 
       <Button type={'Button'} name={'Take Turn'} onClick={onTakeTurn} />
       <br></br>
+
       <br></br>
       <div className="Rows">{gameBoard}</div>
       <br></br>
