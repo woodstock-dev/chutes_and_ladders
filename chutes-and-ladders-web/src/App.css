@@ -2,15 +2,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   height: calc(90vh - 10px);
-  width: auto;
   size: 100vw;
-  border: 2px solid green;
-  
 }
 
 .Spaces {
   display: inline-block;
-  width: calc(1em *100%);
+  width: 100%;
   height: 100%;
   color: #ff0000;
   font-size: large;
@@ -28,5 +25,5 @@ body {
 }
 
 .main {
-  display:block;
+  display: block;
 }

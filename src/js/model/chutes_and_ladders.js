@@ -113,10 +113,15 @@ function rowFinder(indexOfSpace) {
   return Math.floor(indexOfSpace / ROWS);
 }
 
+function resortPlayerOrderInPlayersArray(playersArray) {
+  return playersArray.sort((a, b) => {
+    return a.playerOrder - b.playerOrder;
+  });
+}
+
 export class ChutesAndLadders {
   /**
    *
-   * @param {Number} rows number of spaces in a row
    * @param {Number} chutes number of chutes
    * @param {Number} ladders number of ladders
    */
@@ -223,14 +228,14 @@ export class ChutesAndLadders {
 
   reset() {
     this.makeGameBoard();
-    if (!this.startSpace.playersArr.length) {
-      this.playersArray.forEach((player) => {
-        player.avatar.location.leave();
-        this.startSpace.land(player.avatar);
-      });
-    }
+    this.playersArray.forEach((player) => {
+      player.avatar.location.leave();
+      this.startSpace.land(player.avatar);
+    });
     readyToPlay = false;
     this.haveWinner = false;
+    this.currentPlayer = 0;
+    resortPlayerOrderInPlayersArray(this.playersArray);
   }
 
   specialValuesMaker = (min = minSpecialRangeValue(), max = TOTAL_SPACES) => {

@@ -9,8 +9,8 @@ import Game from './components/Game';
 import Button from './components/Button';
 
 const game = Game();
-const avatarColorList = Object.assign({}, game.colorList);
 const board = game.displayGameBoard();
+const avatarColorList = Object.assign({}, game.colorList);
 const avatarNameList = game.avatarList;
 
 function App() {
@@ -28,6 +28,7 @@ function App() {
     const avatar = event.target.avatarName.value;
     const color = event.target.avatarColorList.value;
     registerPlayerAndAvatar(player, avatar, color);
+
     if (player && avatar && color) setAvatarNames(getAvatarNames.filter((a) => a.name !== avatar));
   };
 
