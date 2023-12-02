@@ -188,7 +188,6 @@ export class ChutesAndLadders {
     const unshiftOrPush = generateRandomNumber(2);
     if (unshiftOrPush === 1) this.playersArray.push(player);
     if (unshiftOrPush === 2) this.playersArray.unshift(player);
-    console.log(this.playersArray);
   }
 
   registerAvatar(avatar, color) {

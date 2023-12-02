@@ -16,7 +16,6 @@ const RegisterAvatar = ({ game }) => {
     event.preventDefault();
     const avatar = event.target.avatarName.value;
     const color = event.target.avatarColorList.value;
-    console.log(avatar, color);
     if (game.playerNoAvatar && avatar && color) setAvatarNames(avatarName.filter((a) => a.name !== avatar));
     game.registerAvatar(avatar, color);
   };

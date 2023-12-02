@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Home from './pages/Home';
 import DisplayActiveGameBoard from './components/DisplayGameBoard';
@@ -16,9 +16,16 @@ function App() {
   const [rednerValue, flipRenderValue] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
   const [boardRender, setBoardRender] = useState(board);
+  // eslint-disable-next-line no-unused-vars
+  const [data, setData] = useState(null);
+
+  React.useEffect(() => {
+    fetch('/api')
+      .then((res) => res.json())
+      .then((data) => setData(data.message));
+  }, []);
 
   function onReadyToPlay() {
-    console.log(...game.playersArray);
     game.setOrderAndStart();
     setReadyToPlay(!readyToPlay);
   }
