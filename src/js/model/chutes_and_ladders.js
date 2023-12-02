@@ -1,21 +1,13 @@
 import { Board } from './board.js';
-import { Color } from './avatar.js';
+import { Avatar, Color } from './avatar.js';
+import { Player } from './player.js';
 import { Space, SpaceType } from './space.js';
 import { RangeSelector } from './range.js';
-import { PlayerSetup } from './player_setup.js';
 import { Die } from './die.js';
 import { generateRandomNumber, rollDice } from './utils.js';
 
 /**
- * select avatar - method that is invoked when new player is created
- * register player - that will
- * play:
- * take turn
- * isWinner()
- * reset EVERYTHING
- * list of pieces in game class to verify no 2 are the same
- * game will determine order of play for players playing
- *
+ * SEPERATE PLAYER AND AVATAR
  */
 
 const TOTAL_SPACES = 100;
@@ -25,6 +17,7 @@ const MAX_SPECIAL_DISTANCE = 40;
 const DIE = new Die(6);
 const MAX_PLAYERS = 4;
 const MIN_PLAYERS = 2;
+let startSpace;
 let uniqueSpecialValues = new Set();
 let uniqueSpecialValuesDump = new Set();
 let specials = [];
@@ -35,7 +28,10 @@ let readyToPlay = false;
 const spaceMaker = (indexOfSpace) => {
   let space = new Space(SpaceType.NORMAL, indexOfSpace);
   if (indexOfSpace === TOTAL_SPACES) space = new Space(SpaceType.FINISH, 'Finish');
-  if (indexOfSpace === START) space = new Space(SpaceType.START, 'Start');
+  if (indexOfSpace === START) {
+    space = new Space(SpaceType.START, 'Start');
+    startSpace = space;
+  }
   if (checkIfSpecialSpace(indexOfSpace)) {
     space = specialSpaceSelector(indexOfSpace);
     specials.push([space, indexOfSpace]);
@@ -129,8 +125,10 @@ export class ChutesAndLadders {
   constructor(chutes, ladders) {
     this.CHUTES = chutes;
     this.LADDERS = ladders;
-    this.startSpace = this.makeGameBoard();
+    this.board = this.makeGameBoard();
+    this.playerNoAvatar = undefined;
     this.playersArray = [];
+    this.avatarsArray = [];
     this.colorList = Color;
     this.currentPlayer = 0;
     this.playerInTurn = undefined;
@@ -149,13 +147,16 @@ export class ChutesAndLadders {
    * makes calls in order to make the game, link the spaces and set the startspace
    */
 
+  get startSpace() {
+    return startSpace;
+  }
+
   makeGameBoard() {
-    const board = new Board(TOTAL_SPACES, spaceMaker, this.specialValuesMaker, connectSpecials);
-    return board.startSpace;
+    return new Board(TOTAL_SPACES, spaceMaker, this.specialValuesMaker, connectSpecials);
   }
 
   displayGameBoard() {
-    let space = this.startSpace;
+    let space = startSpace;
     let gameBoard = [];
     let row = [];
     let indexOfSpace = 1;
@@ -173,13 +174,13 @@ export class ChutesAndLadders {
     return gameBoard.reverse();
   }
 
-  registerPlayer(name, avatar, color) {
-    if (this.playersArray.length === MAX_PLAYERS) return;
-    if (!name || !avatar || !color) {
-      alert('PLEASE REGISTER ALL FIELDS FOR PLAYER AND AVATAR');
+  registerPlayer(name) {
+    if (!name) {
+      alert('CANNOT ENTER BLANK NAME');
       return;
     }
-    const player = new PlayerSetup(name, avatar, color).registerPlayer();
+    const player = new Player(name);
+    this.playerNoAvatar = player;
     this.generatePlayerOrder(player);
   }
 
@@ -187,32 +188,39 @@ export class ChutesAndLadders {
     const unshiftOrPush = generateRandomNumber(2);
     if (unshiftOrPush === 1) this.playersArray.push(player);
     if (unshiftOrPush === 2) this.playersArray.unshift(player);
+    console.log(this.playersArray);
+  }
+
+  registerAvatar(avatar, color) {
+    if (!this.playerNoAvatar) alert('PLEASE REGISTER PLAYER FIRST');
+    else {
+      const playerAvatar = new Avatar(avatar, color);
+      this.playerNoAvatar.avatar = playerAvatar;
+      this.playerNoAvatar = undefined;
+    }
   }
 
   verifyReadyToPlay() {
-    if (this.playersArray.length >= 2 && this.haveWinner === false) return (readyToPlay = true);
+    return (this.readyToPlay = this.playersArray.length >= MIN_PLAYERS && this.playersArray.length <= MAX_PLAYERS && this.haveWinner === false ? true : false);
   }
 
   setOrderAndStart() {
-    this.verifyReadyToPlay();
-    if (readyToPlay) {
+    if (this.verifyReadyToPlay()) {
       this.playersArray.forEach((player, idx) => {
         player.playerOrder = idx + 1;
         this.startSpace.land(player.avatar);
       });
       this.playerInTurn = this.playersArray[this.currentPlayer];
     } else alert('2 PLAYERS MINIMUM NEEDED TO START GAME');
-    console.log(this.playersArray, this.playerInTurn);
   }
 
   takeTurn() {
-    if (this.playerInTurn.avatar.location.type === SpaceType.FINISH) {
-      this.wonGame(this.playerInTurn);
-      return;
-    }
     const moveDist = rollDice(DIE);
     this.playerInTurn.avatar.move(moveDist);
-    this.playerInTurn = this.rotatePlayers();
+    if (this.wonGame(this.playerInTurn.avatar.location.type)) {
+      this.haveWinner = true;
+      return alert(`CONGRADULATIONS ${this.playerInTurn.name}... YOU WON!!!!`);
+    } else this.playerInTurn = this.rotatePlayers();
   }
 
   rotatePlayers() {
@@ -221,12 +229,12 @@ export class ChutesAndLadders {
     return this.playersArray[this.currentPlayer];
   }
 
-  wonGame(player) {
-    this.haveWinner = true;
-    return alert(`CONGRADULATIONS ${player.name}... YOU WON!!!!`);
+  wonGame(locationType) {
+    return locationType === SpaceType.FINISH;
   }
-
   reset() {
+    uniqueSpecialValues.clear();
+    uniqueSpecialValuesDump.clear();
     this.makeGameBoard();
     this.playersArray.forEach((player) => {
       player.avatar.location.leave();
@@ -236,6 +244,7 @@ export class ChutesAndLadders {
     this.haveWinner = false;
     this.currentPlayer = 0;
     resortPlayerOrderInPlayersArray(this.playersArray);
+    return this.displayGameBoard();
   }
 
   specialValuesMaker = (min = minSpecialRangeValue(), max = TOTAL_SPACES) => {

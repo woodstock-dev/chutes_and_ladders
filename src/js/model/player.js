@@ -23,13 +23,13 @@ export class Player {
    *
    * @param name the name of the player
    * @param order the order / position the player is assigned in the game
-   * @param avatar avatar} is the piece the player will play with. Example:
+   * @param avatar avatar is the piece the player will play with.
    *
    */
-  constructor(name, order, avatar) {
+  constructor(name) {
     this.playerName = name;
-    this.playerOrder = order;
-    this.playerAvatar = avatar;
+    this.playerOrder = undefined;
+    this.playerAvatar = undefined;
   }
 
   get name() {
