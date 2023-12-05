@@ -15,30 +15,36 @@
 // Add player implementations here
 
 export class Player {
-  #Name = "";
-  #Order = -1;
-  #Avatar = null;
-
   /**
    * The constructor for the Player class
    *
    * If Jane is the first player and has a Blue car:
-   *     let Jane = new Player('Jane', 0, new Avatar('Car', Color.BLUE))
+   *     let Jane = new Player('Jane', 0, new avatar('Car', Color.BLUE))
    *
    * @param name the name of the player
    * @param order the order / position the player is assigned in the game
-   * @param avatar {Avatar} is the piece the player will play with. Example:
+   * @param avatar avatar is the piece the player will play with.
    *
    */
-  constructor(name, order, avatar) {
-    this.#Name = name;
-    this.#Order = order;
-    this.#Avatar = avatar;
+  constructor(name) {
+    this.playerName = name;
+    this.playerOrder = undefined;
+    this.playerAvatar = undefined;
   }
 
   get name() {
-    return this.#Name;
+    return this.playerName;
   }
 
-  // TODO - Fill in the remaining getters
+  get avatar() {
+    return this.playerAvatar;
+  }
+
+  set avatar(avatar) {
+    this.playerAvatar = avatar;
+  }
+
+  get order() {
+    return this.playerOrder;
+  }
 }

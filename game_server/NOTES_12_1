@@ -1,0 +1,20 @@
+Client - req/res port(3000) server
+|
+req - site (SPA) index.html - main.js
+
+
+server hosts business logic
+
+each request uses thread of cpu and holding that thread raises cpu%
+req is not closed until response is received
+
+model - nouns - game
+service - verbs + business (game) logic
+routes - map uri to service
+
+routes -> services -> model
+
+map out req/res on paper to server chutes and ladders (entire game)
+
+openAPI lets you write text descriptions of the req res of your application
+swagger takes the text descriptions and makes a UI for others to view how your applications works without any information about your application

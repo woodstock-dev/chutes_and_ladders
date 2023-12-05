@@ -1,52 +1,84 @@
-
-// Add avatar implementations here
-
 export class Color {
-    static UNDEFINED = 0;
-    static RED = 1;
-    static BLACK = 2;
-    static BROWN = 3;
-    static BLUE = 4;
-    static GREEN = 5;
-    static PURPLE = 6;
-    static WHITE = 7;
-    static YELLOW = 8;
-    static ORANGE = 9;
-    static PINK = 10;
+  static UNDEFINED = 0;
+  static RED = 1;
+  static BLACK = 2;
+  static BROWN = 3;
+  static BLUE = 4;
+  static GREEN = 5;
+  static PURPLE = 6;
+  static WHITE = 7;
+  static YELLOW = 8;
+  static ORANGE = 9;
+  static PINK = 10;
 }
 
 export class Avatar {
-    #Location = null;
-    #Name = "";
-    #Color = Color.UNDEFINED;
+  /**
+   *
+   * @param name the name of the avatar example: Car, Top Hat, Black Cat, etc
+   * @param color the color of the avatar
+   */
+  constructor(name, color) {
+    this.avatarName = name;
+    this.avatarColor = color;
+    this.avatarLocation = null;
+  }
 
-    /**
-     *
-     * @param name the name of the avatar example: Car, Top Hat, Black Cat, etc
-     * @param color the color of the avatar
-     */
-    constructor(name, color) {
-        this.#Name = name
-        this.#Color = color
-    }
+  get name() {
+    return this.avatarName;
+  }
 
-    get name() {
-        return this.#Name
-    }
+  get color() {
+    return this.avatarColor;
+  }
 
-    get location() {
-        return this.#Location
-    }
+  get location() {
+    return this.avatarLocation;
+  }
 
-    get color() {
-        return this.#Color;
+  set location(location) {
+    this.avatarLocation = location;
+  }
+  /**
+   *
+   * @param {*} numberOfSpaces is the number of spaces to move
+   * @returns the potential location of the avatar after traversing
+   */
+  _moveBack(numberOfSpaces) {
+    let avatarLoc = this.avatarLocation;
+    while (numberOfSpaces > 0) {
+      if (!avatarLoc.previous) return null;
+      else avatarLoc = avatarLoc.previous;
+      numberOfSpaces--;
     }
+    return avatarLoc;
+  }
+  /**
+   *
+   * @param {*} numberOfSpaces number of spaces to move
+   * @returns the potetential location of the avatar after traversing
+   */
+  _moveForward(numberOfSpaces) {
+    let avatarLoc = this.avatarLocation;
+    while (numberOfSpaces > 0) {
+      if (!avatarLoc.next) return null;
+      else avatarLoc = avatarLoc.next;
+      numberOfSpaces--;
+    }
+    return avatarLoc;
+  }
+  /**
+   *
+   * @param {*} numberOfSpaces number of spaces from the die roll
+   */
 
-    set location(loc) {
-        this.#Location = loc
-    }
+  move(numberOfSpaces) {
+    let locBeforeMove = this.location;
+    const locAfterMove = numberOfSpaces > 0 ? this._moveForward(numberOfSpaces) : this._moveBack(Math.abs(numberOfSpaces));
 
-    move(numberOfSpaces) {
-        // TODO - Implement how an Avatar can move between spaces given that it knows it's own location
+    if (locAfterMove) {
+      locBeforeMove.leave();
+      locAfterMove.land(this);
     }
+  }
 }

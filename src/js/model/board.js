@@ -1,16 +1,34 @@
+export class Board {
+  /**
+   *
+   * @param {*} totalSpaces total spaces the board will have
+   * @param {*} spaceMaker the function used to create spaces based on the index of the loop
+   * @param {*} specialValuesMaker function passed from game to make special spaces
+   * @param {*} connectSpecials function passed from game to connect special spaces
+   */
 
+  constructor(totalSpaces, spaceMaker, specialValuesMaker, connectSpecials) {
+    this.totalSpaces = totalSpaces;
+    this.spaceMaker = spaceMaker;
+    this.specialValuesMaker = specialValuesMaker;
+    this.connectSpecials = connectSpecials;
+    this.startSpace = this.boardSetup();
+  }
 
-export class Board  {
+  /**
+   * @returns {Space} | starting space for the board
+   */
 
-    show() {
-            let total = 100;
-            for (let i = 10; i >= 1; i--) {
-                let row = []
-                for (let j = 1; j<=10; j++) {
-                    row.push(total--);
-                }
-                row = (i%2==0) ? row : row.reverse()
-                console.log(row);
-            }
+  //builds the board from top down
+  boardSetup() {
+    this.specialValuesMaker();
+    let space = this.spaceMaker(this.totalSpaces);
+    for (let indexOfSpace = this.totalSpaces - 1; indexOfSpace > 0; indexOfSpace--) {
+      space.previous = this.spaceMaker(indexOfSpace);
+      space.previous.next = space;
+      space = space.previous;
     }
+    this.connectSpecials();
+    return space;
+  }
 }

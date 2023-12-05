@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Player} from "./player.js";
-
 export class SpaceType {
   static START = 0;
   static NORMAL = 1;
@@ -23,14 +21,13 @@ export class SpaceType {
 }
 
 export class Space {
-  #Value = ""
-  #Type = SpaceType.NORMAL;
-  #Next = null
-  #Special = null
-  #Players = Array<Player>(0)
   constructor(type, value) {
-    this.#Type = type
-    this.#Value = value
+    this.spaceType = type;
+    this.spaceValue = String(value);
+    this.spaceNext = null;
+    this.playersArr = [];
+    this.spacePrevious = null;
+    this.spaceSpecial = null;
   }
 
   /**
@@ -38,14 +35,25 @@ export class Space {
    * @param avatar
    */
   land(avatar) {
-    // TODO - Implement landing on the space
+    this.ifOccupied();
+    if (this.spaceSpecial !== null) this.spaceSpecial.land(avatar);
+    else {
+      this.playersArr.push(avatar);
+      avatar.location = this;
+    }
   }
-
   /**
    * Is a method to be invoked when an avatar leaves a space
    */
   leave() {
-    // TODO - Implement leaving the space
+    if (this.type === SpaceType.START) this.playersArr.shift();
+    else this.playersArr.pop();
+  }
+
+  ifOccupied() {
+    if (this.occupied && this.type !== SpaceType.START) {
+      this.playersArr[0].move(1);
+    }
   }
 
   /**
@@ -53,41 +61,32 @@ export class Space {
    * @return {string}
    */
   get value() {
-    return this.#Value
+    return this.spaceValue;
   }
-
   /**
    *
    * @return {number}
    */
   get type() {
-    return this.#Type
+    return this.spaceType;
   }
-
   /**
    *
    * @return {Space | null}
    */
   get next() {
-    return this.#Next
+    return this.spaceNext;
   }
 
-  /**
-   *
-   * @param location {Space}
-   * @return {Space} the current space
-   */
   set next(location) {
-    this.#Next = location
-    return this
+    this.spaceNext = location;
   }
-
   /**
    *
    * @return {Space | null}
    */
   get special() {
-    return this.#Special
+    return this.spaceSpecial;
   }
 
   /**
@@ -96,25 +95,28 @@ export class Space {
    * @return {Space} the current space
    */
   set special(location) {
-    this.#Special = location
-    return this
+    this.spaceSpecial = location;
   }
-
-
   /**
    *
-   * @return {*[]} a copy of the array of players
+   * @return {*[]} a copy of the array ofplayers
    */
   get players() {
-    // returns a copy of the players
-    return [...this.#Players]
+    return this.playersArr;
   }
-
   /**
-   * @return boolean true if the space has players, false otherwise
+   * @return boolean true if the space hasplayers, false otherwise
    */
   get occupied() {
-    // TODO - implement the logic to determine if the space is occupied
+    return this.players.length > 0;
+  }
+
+  get previous() {
+    return this.spacePrevious;
+  }
+
+  set previous(previous) {
+    this.spacePrevious = previous;
   }
 
   /**
@@ -122,8 +124,5 @@ export class Space {
    * @param validators Array<(space {Space}) => boolean> an array of functions that can validate the space.
    * @return {boolean} true if the space is valid, false otherwise.
    */
-  validate(validators) {
-    // TODO - Implement a method that validates the spaces state
-    return false
-  }
+  validate(validators) {}
 }

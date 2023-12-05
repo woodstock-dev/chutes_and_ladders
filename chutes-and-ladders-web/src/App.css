@@ -1,0 +1,29 @@
+.Rows {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  height: calc(90vh - 10px);
+  size: 100vw;
+}
+
+.Spaces {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  color: #ff0000;
+  font-size: large;
+  font-weight: bold;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid black;
+  
+  
+}
+body {
+  background-color: #c0c0c0;
+  font-family: fira code;
+}
+
+.main {
+  display: block;
+}

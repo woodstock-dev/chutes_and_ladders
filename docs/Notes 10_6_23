@@ -1,0 +1,46 @@
+10/06/23 – Notes
+
+We discussed the following from the perspective of the space.js module:
+
+    • Actions of land(), leave(), get players(), get occupied(), avatar.move()
+    • validate() was not discussed as in depth as these topics
+    • How to decide which data structure to use
+
+Actions of land() ,
+
+    • Land method is to be the main source of action for when an avatar lands on a space
+    • Land assigns the space itself to the avatar’s location
+    • Land adds the avatar (in the module its called get players()) to a data structure you create, to identify if an avatar is already in the space – more on this later
+    • Land is updated whenever the avatar moves any number of spaces
+
+Actions of leave(),
+
+    • Leave updates the data structure you created to store the avatar if on a space
+
+Actions of get players() - If I am not concise with this, please feel free to ask me and I will try and explain differently without giving the answers
+
+    • Get players() returns the data structure that holds the avatar in the space
+    • In that return get players() holds the information on whether or not the get occupied is true or false
+    • Get occupied() is automatically changed to true or false depending on the presence or absence of an avatar in the space
+ 
+Avatar.move()
+
+    • Avatar.move() should not mutate the this.#Location directly – look at other setter methods for how to mutate
+    • Avatar.move() should call the land method to automatically update the necessary information
+
+Space.test.js 
+
+    • Create this file for testing
+    • Make sure you reset the spaces, avatar, etc each time you enact a test by using beforeEach(), if you do not do this, your methods might not work correctly in the test even though they are written correctly. This is due to the random nature that jest enacts each test provided
+
+How to decide which data structure to use – We went over a deductive reasoning method on how to decide which data structure to use. The summary of the discussion is as follows
+
+    • Make a chart with x and y axis
+    • One axis is the types of data structures that could work for your project, the other is the methods or actions needed to execute in the project
+    • Using the scoring system: 0 worst, 3 average, 5 ideal; work through (roughly) in your mind (or paper) what would have to be done in order to execute the functionality of your project; loops, space needed, etc. All things that add time or space to a project
+    • After all is scored, add up the scores for each data structure at the bottom and the highest score wins
+
+
+
+
+
