@@ -13,38 +13,38 @@
 // limitations under the License.
 
 // Add player implementations here
+import { generateRandomNumber } from './utils.js';
 
 export class Player {
-  /**
-   * The constructor for the Player class
-   *
-   * If Jane is the first player and has a Blue car:
-   *     let Jane = new Player('Jane', 0, new avatar('Car', Color.BLUE))
-   *
-   * @param name the name of the player
-   * @param order the order / position the player is assigned in the game
-   * @param avatar avatar is the piece the player will play with.
-   *
-   */
-  constructor(name) {
-    this.playerName = name;
-    this.playerOrder = undefined;
-    this.playerAvatar = undefined;
-  }
+	/**
+	 * The constructor for the Player class
+	 *
+	 * If Jane is the first player and has a Blue car:
+	 *     let Jane = new Player('Jane', 0, new avatar('Car', Color.BLUE))
+	 *
+	 * @param name the name of the player
+	 * @param order the order / position the player is assigned in the game
+	 * @param avatar avatar is the piece the player will play with.
+	 *
+	 */
+	constructor(name) {
+		this.playerName = name;
+		this.playerOrder;
+		this.playerAvatar;
+	}
 
-  get name() {
-    return this.playerName;
-  }
+	get name() {
+		return this.playerName;
+	}
 
-  get avatar() {
-    return this.playerAvatar;
-  }
+	get order() {
+		return this.playerOrder;
+	}
+	get avatar() {
+		return this.playerAvatar;
+	}
 
-  set avatar(avatar) {
-    this.playerAvatar = avatar;
-  }
-
-  get order() {
-    return this.playerOrder;
-  }
+	set avatar(avatar) {
+		this.playerAvatar = avatar;
+	}
 }

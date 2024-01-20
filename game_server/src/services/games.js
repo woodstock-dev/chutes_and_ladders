@@ -5,3 +5,7 @@ const listGames = () => {
 };
 
 exports.listGames = listGames;
+
+//AXIOS GET CAN ONLY MANIPULATE THE HEADER AND QUERY STRING
+
+//MATRIX PARAM EXISTS PAST QUERY STRING

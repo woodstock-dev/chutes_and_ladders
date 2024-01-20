@@ -1,14 +1,6 @@
 const app = require('./app');
+const PORT = 3001;
 
-app.get('/api', (req, res) => {
-  res.json({ message: 'Hello from Express!' });
-});
-
-// app.use(express.static(path.resolve(__dirname, '../chutes_and_ladders/chutes-and-ladders-web/dist')));
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../chutes-and-ladders-web/dist', 'index.html'));
-});
-
-app.listen(3000, () => {
-  console.log('RUNNING 3000 BIA!!');
+app.listen(PORT, '127.0.0.1', () => {
+  console.log(`RUNNING PORT ${PORT}`);
 });
